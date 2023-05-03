@@ -1,14 +1,15 @@
 .welcome{
   width: 100%;
-  color: #333;
-  padding: 10px;
+  height: 80vh;
+  min-height: 85vh;
+  color:  #6548ce;
+  padding: 15px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
 }
 
 .welcome-header-wrapper .small-header{
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
 }
 
@@ -21,6 +22,7 @@
 }
 
 .form {
+margin-top: 1rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -33,7 +35,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  /* text-align: left; */
   margin: 0 auto;
 }
 
@@ -44,7 +45,7 @@
   font-weight: 400;
   font-size: 18px;
   width: 100%;
-align-items: center;
+  align-items: center;
 }
 
 .form .form-input-wrapper input{
@@ -52,9 +53,26 @@ align-items: center;
   height: 25px;
   outline: none;
   padding: 3%;
+  border: none;
+  border-radius: 10px;
+  background-color: #ddd;
 }
 
-.form button{
+.form button {
   width: 30%;
   height: 50px;
+  background-color: #6548ce;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+}
+
+.form button:hover{
+  background-color: #fff;
+  transition: all 0.5s ease-in-out;
+  color: #6548ce;
+  font-size: larger;
+  border: 1px solid #6548ce;
 }

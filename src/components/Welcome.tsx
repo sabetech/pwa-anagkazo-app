@@ -1,22 +1,16 @@
 import { FC, FormEvent, useState } from 'react';
-// import { useMutation, QueryClient, QueryClientProvider } from 'react-query';
 import "./Welcome.css"
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-// type VerifyIndexNumberResponse = {
-//   already_exists: boolean;
-// };
-
 const verifyIndexNumber = async (indexNumber: number): Promise<any> => {
   try {
     const response = await axios.post(
       'https://anagkazo.firstlovegallery.com/api/pwa/verify-indexnumber',
-      { index_number: indexNumber }
+      { "index_number": indexNumber }
     );
     console.log(response);
-    // return response.data;
   } catch (error) {
     throw new Error('An error occurred while verifying the index number.');
   }
