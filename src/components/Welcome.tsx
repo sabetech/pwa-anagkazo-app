@@ -2,30 +2,20 @@ import { FC, FormEvent, useState } from 'react';
 import "./Welcome.css"
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { verifyStudent } from '../services/UserManagement';
 
-const verifyIndexNumber = async (indexNumber: number): Promise<any> => {
-  try {
-    const response = await axios.post(
-      'https://anagkazo.firstlovegallery.com/api/pwa/verify-indexnumber',
-      { "index_number": indexNumber }
-    );
-    console.log(response);
-  } catch (error) {
-    throw new Error('An error occurred while verifying the index number.');
-  }
-};
 
 const Welcome: FC = () => {
   const navigate = useNavigate();
   const [indexNumber, setIndexNumber] = useState('');
-  const verifyIndexNumberMutation = useMutation((indexNumber: number) => verifyIndexNumber(indexNumber), {
+  const verifyIndexNumberMutation = useMutation((indexNumber: number) => verifyStudent(indexNumber), {
     onSuccess: (data) => {
-      if (data.already_exists) {
-        navigate('/existing-user');
-      } else {
-        navigate('/new-user');
-      }
+      console.log(data)
+      // if (data.already_exists) {
+      //   //navigate('/existing-user');
+      // } else {
+      //   //navigate('/new-user');
+      // }
     },
   });
 
