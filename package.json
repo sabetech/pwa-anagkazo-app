@@ -9,7 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@yudiel/react-qr-scanner": "^1.1.9",
     "antd-mobile": "^5.31.1",
+    "antd-mobile-icons": "^0.3.0",
     "axios": "^1.4.0",
     "react": "^18.2.0",
     "react-auth-kit": "^2.12.3",

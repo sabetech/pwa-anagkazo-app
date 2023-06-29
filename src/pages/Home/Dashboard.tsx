@@ -1,25 +1,57 @@
-import { Grid, Card } from 'antd-mobile'
+import { Grid, Card, FloatingBubble, Modal } from 'antd-mobile'
+import { ScanningOutline } from 'antd-mobile-icons'
+import {QrScanner} from '@yudiel/react-qr-scanner';
+import { ValueCard } from '../../components/dashboard/ValueCard';
 
 const Dashboard = () => {
+
+    const decode = (decoded: string) => {
+        console.log(decoded)
+    }
+
     return (
         <>
+            <div style={{
+                width: '100%',
+                height: '20vh',
+                backgroundColor: 'gray',
+                borderBottomRightRadius: 15,
+                borderBottomLeftRadius: 15,
+                boxShadow: '2px 2px 14px 0px rgba(0,0,0,0.25)',
+                margin: 'auto'
+            }}>
+                
+            </div>
             <Grid columns={2} gap={2}>
-                <Grid.Item>
-                    <Card title='Avg Fellowship Attn' >
-                        <h1 style={{fontSize:64, paddingTop:0}}>13</h1>
-                    </Card>
+                <Grid.Item >
+                    <ValueCard />
                 </Grid.Item>
                 <Grid.Item>
-                    <Card title='Avg Bussing Attn' >
-                    <h1>13</h1>
-                    </Card>
+                    <ValueCard />
                 </Grid.Item>
-                <Grid.Item>
-                    <Card title='Avg Percentage' >
-                    <h1>13</h1>
-                    </Card>
-                </Grid.Item>
+                
             </Grid>
+            <FloatingBubble
+            style={{
+                '--initial-position-bottom': '24px',
+                '--initial-position-right': '24px',
+                '--edge-distance': '24px',
+            }}
+               onClick={() => {
+                Modal.alert({
+                    title: 'Scan QR Code',
+                    content: <>
+                    <QrScanner
+                        onDecode={(result) => decode(result) }
+                        onError={(error) => console.log(error?.message)}
+                    /></>,
+                    confirmText: 'Ok',
+                    onConfirm: () => console.log('ok'),
+                })
+               }}
+            >
+            <ScanningOutline fontSize={32} />
+        </FloatingBubble>
         </>
     )
 }
