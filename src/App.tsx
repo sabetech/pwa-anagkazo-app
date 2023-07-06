@@ -9,6 +9,9 @@ import NewUser from './pages/Auth/NewUser';
 import Dashboard from './pages/Home/Dashboard';
 import {Footer} from 'antd-mobile';
 import AttendanceDetails from './pages/Detail/AttendanceDetail';
+import FellowsipServiceDetails from './pages/Detail/FellowshipServiceDetail';
+import BussingDetails from './pages/Detail/BussingDetail';
+import PastoralPointDetail from './pages/Detail/PastoralPoint';
 
 function App() {
   const queryClient = new QueryClient();
@@ -24,6 +27,9 @@ function App() {
           <Route path='/new-user' element={<NewUser />} />
           <Route path='/dashboard' element={<Dashboard />} />
           <Route path='/details/:id' element={<AttendanceDetails />} />
+          <Route path='/details2/:id' element={<FellowsipServiceDetails />} />
+          <Route path='/details3/:id' element={<BussingDetails />} />
+          <Route path='/details4/:id' element={<PastoralPointDetail />} />
         </Routes>
       </Router>
       <Footer label='(c) Anagkazo Lite 2023'></Footer>

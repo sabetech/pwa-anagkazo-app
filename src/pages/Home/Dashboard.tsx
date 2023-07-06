@@ -12,7 +12,24 @@ const Dashboard = () => {
     }
 
     const handleClick = (label: string) => {
-        navigate("/details/2");
+        switch(label) {
+            case 'attendance':
+                navigate("/details/1");
+            break;
+
+            case 'fellowship':
+                navigate("/details2/2");    
+            break;
+
+            case 'bacenta':
+                navigate("/details3/3");
+            break;
+
+            case 'pastoral_point':
+                navigate("/details4/4")
+            break;
+        }
+        
     }
 
     return (
@@ -57,16 +74,16 @@ const Dashboard = () => {
             </div>
             <Grid columns={2} gap={2}>
                 <Grid.Item >
-                    <ValueCard key={"fellowshipAttn"} title="Fellowship Attn Avg" value={15} handleClick={() => handleClick("Fellowship")  } />
+                    <ValueCard key={"fellowshipAttn"} title="Attendance" value={15} handleClick={() => handleClick("attendance")  } />
                 </Grid.Item>
                 <Grid.Item>
-                    <ValueCard key={"bussingAttnAvg"} title="Bussing Attn Avg" value={15} handleClick={() => console.log("Hellow world")} />
+                    <ValueCard key={"bussingAttnAvg"} title="Fellowship" value={12} handleClick={() => handleClick("fellowship")} />
                 </Grid.Item>
                 <Grid.Item >
-                    <ValueCard key={"fellowshipOfferingAvg"} title="Fellowship Offering Avg" value={15} handleClick={() => console.log("Hellow world")} />
+                    <ValueCard key={"fellowshipOfferingAvg"} title="Bussing" value={10} handleClick={() => handleClick("bacenta")} />
                 </Grid.Item>
                 <Grid.Item>
-                    <ValueCard key={"x"} title="hei" value={15} handleClick={() => console.log("Hellow world")} />
+                    <ValueCard key={"pastoral_point"} title="Pastoral Points" value={15} handleClick={() => handleClick("pastoral_point")} />
                 </Grid.Item>
                 
             </Grid>
