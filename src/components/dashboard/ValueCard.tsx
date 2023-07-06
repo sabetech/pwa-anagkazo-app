@@ -13,7 +13,7 @@ export const ValueCard: React.FC<ValueCardProps> = ({title, value, handleClick }
     borderRadius: 25,
     marginLeft: 10,
     marginTop: 50,
-    boxShadow: '2px 2px 14px 0px rgba(0,0,0,0.25)',
+    boxShadow: '1px 1px 8px 0px rgba(0,0,0,0.25)',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
