@@ -1,11 +1,13 @@
-import { NavBar, Tabs, List, SpinLoading } from 'antd-mobile'
-import { CheckOutline, ExclamationCircleOutline } from 'antd-mobile-icons';
+import { NavBar, List, FloatingBubble, Modal, Form, Stepper } from 'antd-mobile'
+import { CheckOutline, AddOutline  } from 'antd-mobile-icons';
 import { useNavigate } from 'react-router-dom';
-
 
 const BussingDetails = () => {
     const navigate = useNavigate()
 
+    const decode = (decoded: string) => {
+        console.log(decoded)
+    }
 
     return (
         <>
@@ -22,6 +24,28 @@ const BussingDetails = () => {
                     4th July 2023
                 </List.Item>
             </List>
+            <FloatingBubble
+                style={{
+                    '--initial-position-bottom': '24px',
+                    '--initial-position-right': '24px',
+                    '--edge-distance': '24px',
+                    '--z-index': '10px'
+                }}
+               onClick={() => {
+                Modal.alert({
+                    title: 'Enter Bussing Details',
+                    content: <>
+                        <Form.Item name='amount' label='数量' childElementPosition='right'>
+                            <Stepper />
+                        </Form.Item>
+                    </>,
+                    confirmText: 'Ok',
+                    onConfirm: () => console.log('ok'),
+                })
+               }}
+            >
+            <AddOutline fontSize={32} />
+        </FloatingBubble>
         </>
     )
 }
