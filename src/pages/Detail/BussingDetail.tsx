@@ -5,9 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const BussingDetails = () => {
     const navigate = useNavigate()
 
-    const decode = (decoded: string) => {
-        console.log(decoded)
-    }
+    
 
     return (
         <>
