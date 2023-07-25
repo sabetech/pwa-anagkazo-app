@@ -1,7 +1,12 @@
-export interface ServerResponse<T> {
+export interface ServerResponse<T = any> {
+    status: number;
     data: T;
-    success: boolean;
-    message?: string;
+}
+
+export interface ResponseError {
+    message: string;
+    code: string;
+    response?: ServerResponse;
 }
 
 export interface User {

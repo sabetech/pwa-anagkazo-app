@@ -1,11 +1,27 @@
-import { NavBar, List, FloatingBubble, Modal, Form, Stepper } from 'antd-mobile'
+import { useState } from 'react';
+import { NavBar, List, FloatingBubble, Modal, Form, Stepper, ImageUploader } from 'antd-mobile'
+import { ImageUploadItem } from 'antd-mobile/es/components/image-uploader'
 import { CheckOutline, AddOutline  } from 'antd-mobile-icons';
 import { useNavigate } from 'react-router-dom';
 
 const BussingDetails = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const [fileList, setFileList] = useState<ImageUploadItem[]>()
 
-    
+    const onBussingEntryConfirm = () => {
+        console.log('ok')
+    }
+
+    const upload = async (file: File) : Promise<ImageUploadItem> => {
+        return new Promise((resolve, reject) => {
+            const imageUploadItem: ImageUploadItem = {url: 'http://url_is_here'}
+              resolve(imageUploadItem);
+              if (false) {
+                reject(new Error('error'));
+              }
+        });
+
+    }
 
     return (
         <>
@@ -33,12 +49,26 @@ const BussingDetails = () => {
                 Modal.alert({
                     title: 'Enter Bussing Details',
                     content: <>
-                        <Form.Item name='amount' label='数量' childElementPosition='right'>
+                        <Form.Item name='number_bussed' label='Number Bussed' childElementPosition='right'
+                            initialValue={0}
+                            rules={[
+                              {
+                                min: 0,
+                                type: 'number',
+                              },
+                            ]}
+                        >
                             <Stepper />
+                            <ImageUploader
+                                value={fileList}
+                                onChange={setFileList}
+                                upload={upload}
+                                maxCount={1}
+                            />
                         </Form.Item>
                     </>,
                     confirmText: 'Ok',
-                    onConfirm: () => console.log('ok'),
+                    onConfirm: () => onBussingEntryConfirm(),
                 })
                }}
             >

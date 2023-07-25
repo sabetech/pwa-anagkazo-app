@@ -1,8 +1,8 @@
 import { QueryClient, QueryClientProvider } from 'react-query'
-// import './App.css'
+import './App.css'
 // import ExistingUser from './components/ExistingUser'
 // import NewUser from './components/NewUser'
-import Welcome from './components/Welcome'
+import Welcome from './pages/Auth/Welcome'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import ExistingUser from './pages/Auth/ExistingUser'
 import NewUser from './pages/Auth/NewUser';
@@ -32,8 +32,8 @@ function App() {
           <Route path='/details4/:id' element={<PastoralPointDetail />} />
         </Routes>
       </Router>
-      <Footer label='(c) Anagkazo Lite 2023'></Footer>
     </div>
+    <Footer label='(c) Anagkazo Lite 2023'></Footer>
     </QueryClientProvider>
   )
 }
