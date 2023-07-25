@@ -1,20 +1,31 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useContext } from 'react';
 import { Space, Image, Form, Input, SafeArea, Button, Popover, Toast } from "antd-mobile";
 import anagkazo_logo from "../../assets/anagkazo_logo_trans.png";
 import { useMutation } from 'react-query';
 import { verifyStudent } from '../../services/UserManagement';
-import { ResponseError, ServerResponse } from '../../interfaces/ServerResponse';
+import { IUserManager, ResponseError, ServerResponse, User } from '../../interfaces/ServerResponse';
 import * as ResponseCodes from '../../constants/ResponseStatusCodes';
+import { UserContext } from '../../contexts/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 const Welcome: React.FC = () => {
     const indexNumberRef = useRef(null);
     const [indexNumber, setIndexNumber] = useState<string>('');
     const [isFormEmpty, setFormEmpty] = useState<boolean>(false);
+    const { storeUser } = useContext(UserContext) as IUserManager;
+    const navigate = useNavigate();
+
+
     const { mutate, isLoading } = useMutation({
         mutationFn: async (indexNumber: number) => { 
             const response = await verifyStudent(indexNumber);
             if (response.status === ResponseCodes.OK) {
-                console.log("RESPONSE HERE", response.data)
+                storeUser(response.data.user as User)
+                if (response.data.user.already_exists) {
+                    navigate('/existing-user')
+                } else {
+                    navigate('/new-user')
+                }
             }
         },
         onSuccess: () => {
@@ -22,10 +33,7 @@ const Welcome: React.FC = () => {
                 content: 'Login Successful',
                 duration: 1000,
                 icon: 'success',
-                position: 'top',
-                afterClose: () => {
-                    // navigate('/dashboard')
-                }
+                position: 'top'
             })
         },
         onError: ( error: ResponseError ) => {
