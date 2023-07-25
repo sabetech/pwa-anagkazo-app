@@ -15,15 +15,15 @@ interface loginProps {
 const ExistingUser = () => {
     const [passcode, setPasscode] = useState<string>('');
     const navigate = useNavigate();
-    //get user context from here
+    
     const { user } = useContext(UserContext) as IUserManager;
     const { mutate, isLoading } = useMutation({
         mutationFn: async ({indexNumber, passcode}: loginProps) => {
             const response = await authenticateStudent(indexNumber, passcode);
             if (response.status === ResponseCodes.OK) {
-                navigate('/dashboard')    
+                navigate('/dashboard');
             }
-        }   
+        }
     })
 
     const onLogin = () => {
