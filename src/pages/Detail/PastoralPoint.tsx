@@ -30,8 +30,6 @@ const PastoralPointDetail = () => {
             setTotalPoints(myTotalPoints as number);
         }
 
-
-
     },[pastoralPoints])
 
     return (
@@ -39,7 +37,7 @@ const PastoralPointDetail = () => {
             <SafeArea position='top' />
            <NavBar onBack={() => navigate("/dashboard")} style={{'--height': '60px'}} > Fellowship Service Detail </NavBar>
            
-            <List header={'Pastoral Point: '+totalPoints} style={{height: "80vh"}}>
+            <List header={'Pastoral Point: '+totalPoints} style={{height: "80vh", marginBottom: 20}}>
                 {
                     isLoading ? <SpinLoading /> : pastoralPoints?.data.map((pastoralPoint: IPastoralPoint) => {
                         return (

@@ -1,15 +1,39 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../contexts/UserContext';
-import { IUserManager } from '../../interfaces/ServerResponse';
+import { IPastoralPoint, IUserManager } from '../../interfaces/ServerResponse';
 import { Grid, Space, FloatingBubble, Modal, Image,ProgressCircle  } from 'antd-mobile'
 import { ScanningOutline } from 'antd-mobile-icons'
 import {QrScanner} from '@yudiel/react-qr-scanner';
 import { ValueCard } from '../../components/dashboard/ValueCard';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from 'react-query';
+import { getPastoralPoint } from '../../services/StudentData';
+import { ServerResponse } from '../../interfaces/ServerResponse';
 
 const Dashboard = () => {
     const navigate = useNavigate();
+    const [pastoralPoint, setPastoralPoint] = useState<IPastoralPoint[]>([]);
+    const [totalPoints, setTotalPoints] = useState<number>(0);
     const { user } = useContext(UserContext) as IUserManager;
+    const {data: pastoralPoints, isLoading} = useQuery<ServerResponse>(['pastoral_points'], () => getPastoralPoint());
+
+    useEffect(() => {
+
+        if (pastoralPoints?.data) {
+            const parameters = pastoralPoints?.data.map((pastoralPoint: IPastoralPoint) => {
+                return pastoralPoint
+            })
+            setPastoralPoint(parameters);
+
+            const myTotalPoints = pastoralPoints?.data.reduce((total: number, pastoralPoint: IPastoralPoint) => {
+                return total + pastoralPoint.pivot.points
+            },0)
+
+            setTotalPoints(myTotalPoints as number);
+        }
+
+
+    },[pastoralPoints])
 
     const decode = (decoded: string) => {
         console.log(decoded)
@@ -56,7 +80,7 @@ const Dashboard = () => {
                     <Space direction='vertical'>
                         <div style={{marginTop: 30}}>
                             <div style={{ height: "20%", width: "55vw", marginTop: 20}}>
-                                <p style={{ fontFamily: 'Verdana, sans-serif', fontSize: 25, margin: 0, color: 'white' }}>Hello, <strong>John</strong></p>
+                                <p style={{ fontFamily: 'Verdana, sans-serif', fontSize: 25, margin: 0, color: 'white' }}>Hello, <strong>{user?.name.split(" ")[0]}</strong></p>
                             </div>
                             <div style={{ height: "10%", width: "55vw", marginTop: 5}}>
                                 <h1 style={{ fontFamily: 'Verdana, sans-serif', fontSize: 14, fontWeight: 400, margin: 0, color: 'white' }}>SC - Class - Placeholder</h1>
@@ -87,7 +111,7 @@ const Dashboard = () => {
                     <ValueCard key={"fellowshipOfferingAvg"} title="Bussing" value={10} handleClick={() => handleClick("bacenta")} />
                 </Grid.Item>
                 <Grid.Item>
-                    <ValueCard key={"pastoral_point"} title="Pastoral Points" value={15} handleClick={() => handleClick("pastoral_point")} />
+                    <ValueCard key={"pastoral_point"} title="Pastoral Points" value={totalPoints} handleClick={() => handleClick("pastoral_point")} />
                 </Grid.Item>
                 
             </Grid>
