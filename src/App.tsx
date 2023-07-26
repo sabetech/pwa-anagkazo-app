@@ -26,13 +26,13 @@ function App() {
           <Route path='/existing-user' element={<ExistingUser />} />
           <Route path='/new-user' element={<NewUser />} />
           <Route path='/dashboard' element={<Dashboard />} />
-          <Route path='/details/:id' element={<AttendanceDetails />} />
-          <Route path='/details2/:id' element={<FellowsipServiceDetails />} />
-          <Route path='/details3/:id' element={<BussingDetails />} />
-          <Route path='/details4/:id' element={<PastoralPointDetail />} />
+          <Route path='/attendance' element={<AttendanceDetails />} />
+          <Route path='/fellowship' element={<FellowsipServiceDetails />} />
+          <Route path='/bussing' element={<BussingDetails />} />
+          <Route path='/pastoral_point' element={<PastoralPointDetail />} />
         </Routes>
       </Router>
-      <Footer label='(c) Anagkazo Lite 2023' style={{position: 'absolute', bottom: 10}}></Footer>
+      <Footer label='(c) Anagkazo Lite 2023' style={{position: 'fixed', bottom: 10}}></Footer>
     </div>
     
     </QueryClientProvider>

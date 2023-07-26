@@ -25,3 +25,15 @@ export interface IUserManager {
     user: User | null;
     storeUser(user: User): void;
 }
+
+interface Pivot {
+    points: number;
+}
+
+export interface IPastoralPoint {
+    id: number;
+    parameter: string;
+    weight: number;
+    point_category: string;
+    pivot: Pivot;
+}
