@@ -1,8 +1,7 @@
 import { QueryClient, QueryClientProvider } from 'react-query'
-// import './App.css'
-// import ExistingUser from './components/ExistingUser'
-// import NewUser from './components/NewUser'
-import Welcome from './components/Welcome'
+import './App.css'
+import UserProvider from './contexts/UserContext'
+import Welcome from './pages/Auth/Welcome'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import ExistingUser from './pages/Auth/ExistingUser'
 import NewUser from './pages/Auth/NewUser';
@@ -18,6 +17,7 @@ function App() {
 
 
   return (
+    <UserProvider>
     <QueryClientProvider client={queryClient}>
     <div className="App">
       <Router>
@@ -26,15 +26,17 @@ function App() {
           <Route path='/existing-user' element={<ExistingUser />} />
           <Route path='/new-user' element={<NewUser />} />
           <Route path='/dashboard' element={<Dashboard />} />
-          <Route path='/details/:id' element={<AttendanceDetails />} />
-          <Route path='/details2/:id' element={<FellowsipServiceDetails />} />
-          <Route path='/details3/:id' element={<BussingDetails />} />
-          <Route path='/details4/:id' element={<PastoralPointDetail />} />
+          <Route path='/attendance' element={<AttendanceDetails />} />
+          <Route path='/fellowship' element={<FellowsipServiceDetails />} />
+          <Route path='/bussing' element={<BussingDetails />} />
+          <Route path='/pastoral_point' element={<PastoralPointDetail />} />
         </Routes>
       </Router>
-      <Footer label='(c) Anagkazo Lite 2023'></Footer>
+      <Footer label='(c) Anagkazo Lite 2023' style={{position: 'fixed', bottom: 10}}></Footer>
     </div>
+    
     </QueryClientProvider>
+    </UserProvider>
   )
 }
 

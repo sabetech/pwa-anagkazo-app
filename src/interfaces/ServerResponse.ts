@@ -1,9 +1,39 @@
-export interface ServerResponse<T> {
+export interface ServerResponse<T = any> {
+    status: number;
     data: T;
-    success: boolean;
-    message?: string;
+}
+
+export interface ResponseError {
+    message: string;
+    code: string;
+    response?: ServerResponse;
 }
 
 export interface User {
-    user: object;
+    id? : number;
+    index_number: number;
+    name: string;
+    phone: string;
+    class: string;
+    country: string;
+    email_address?: string;
+    date_of_birth?: string;
+    already_exists?: boolean;
+}
+
+export interface IUserManager {
+    user: User | null;
+    storeUser(user: User): void;
+}
+
+interface Pivot {
+    points: number;
+}
+
+export interface IPastoralPoint {
+    id: number;
+    parameter: string;
+    weight: number;
+    point_category: string;
+    pivot: Pivot;
 }

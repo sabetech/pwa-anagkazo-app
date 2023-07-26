@@ -1,11 +1,39 @@
+import { useContext, useEffect, useState } from 'react';
+import { UserContext } from '../../contexts/UserContext';
+import { IPastoralPoint, IUserManager } from '../../interfaces/ServerResponse';
 import { Grid, Space, FloatingBubble, Modal, Image,ProgressCircle  } from 'antd-mobile'
 import { ScanningOutline } from 'antd-mobile-icons'
 import {QrScanner} from '@yudiel/react-qr-scanner';
 import { ValueCard } from '../../components/dashboard/ValueCard';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from 'react-query';
+import { getPastoralPoint } from '../../services/StudentData';
+import { ServerResponse } from '../../interfaces/ServerResponse';
 
 const Dashboard = () => {
     const navigate = useNavigate();
+    const [pastoralPoint, setPastoralPoint] = useState<IPastoralPoint[]>([]);
+    const [totalPoints, setTotalPoints] = useState<number>(0);
+    const { user } = useContext(UserContext) as IUserManager;
+    const {data: pastoralPoints, isLoading} = useQuery<ServerResponse>(['pastoral_points'], () => getPastoralPoint());
+
+    useEffect(() => {
+
+        if (pastoralPoints?.data) {
+            const parameters = pastoralPoints?.data.map((pastoralPoint: IPastoralPoint) => {
+                return pastoralPoint
+            })
+            setPastoralPoint(parameters);
+
+            const myTotalPoints = pastoralPoints?.data.reduce((total: number, pastoralPoint: IPastoralPoint) => {
+                return total + pastoralPoint.pivot.points
+            },0)
+
+            setTotalPoints(myTotalPoints as number);
+        }
+
+
+    },[pastoralPoints])
 
     const decode = (decoded: string) => {
         console.log(decoded)
@@ -14,19 +42,19 @@ const Dashboard = () => {
     const handleClick = (label: string) => {
         switch(label) {
             case 'attendance':
-                navigate("/details/1");
+                navigate("/attendance");
             break;
 
             case 'fellowship':
-                navigate("/details2/2");    
+                navigate("/fellowship");    
             break;
 
             case 'bacenta':
-                navigate("/details3/3");
+                navigate("/bussing");
             break;
 
             case 'pastoral_point':
-                navigate("/details4/4")
+                navigate("/pastoral_point")
             break;
         }
         
@@ -37,8 +65,8 @@ const Dashboard = () => {
             <div style={{
                 width: '100%',
                 height: '20vh',                
-                // background: rgb(214,203,251);
-                background: 'linear-gradient(47deg, rgba(214,203,251,1) 0%, rgba(236,236,250,1) 100%)',
+                background: "#b12340",
+                // background: 'linear-gradient(47deg, rgba(214,203,251,1) 0%, rgba(236,236,250,1) 100%)',
                 // backgroundImage: `url('https://t3.ftcdn.net/jpg/04/06/60/72/240_F_406607245_daS9yMQ9g8MMZz3XWf2LVXxFy5cAdLQ7.jpg')`,
                 borderBottomRightRadius: 15,
                 borderBottomLeftRadius: 15,
@@ -52,13 +80,13 @@ const Dashboard = () => {
                     <Space direction='vertical'>
                         <div style={{marginTop: 30}}>
                             <div style={{ height: "20%", width: "55vw", marginTop: 20}}>
-                                <p style={{ fontFamily: 'Verdana, sans-serif', fontSize: 25, margin: 0, color: '#7103F5' }}>Hello, <strong>John</strong></p>
+                                <p style={{ fontFamily: 'Verdana, sans-serif', fontSize: 25, margin: 0, color: 'white' }}>Hello, <strong>{user?.name.split(" ")[0]}</strong></p>
                             </div>
                             <div style={{ height: "10%", width: "55vw", marginTop: 5}}>
-                                <h1 style={{ fontFamily: 'Verdana, sans-serif', fontSize: 14, fontWeight: 400, margin: 0, color: 'grey' }}>SC - Class - Placeholder</h1>
+                                <h1 style={{ fontFamily: 'Verdana, sans-serif', fontSize: 14, fontWeight: 400, margin: 0, color: 'white' }}>SC - Class - Placeholder</h1>
                             </div>
                             <div style={{ height: "10%", width: "55vw", marginTop: 5}}>
-                                <h1 style={{ fontFamily: 'Verdana, sans-serif', fontSize: 14, fontWeight: 400, margin: 0, color: 'grey' }}>Attendance Rating:</h1>
+                                <h1 style={{ fontFamily: 'Verdana, sans-serif', fontSize: 14, fontWeight: 400, margin: 0, color: 'white' }}>Attendance Rating:</h1>
                                 {/* <ProgressCircle
                                     percent={60}
                                     style={{
@@ -83,7 +111,7 @@ const Dashboard = () => {
                     <ValueCard key={"fellowshipOfferingAvg"} title="Bussing" value={10} handleClick={() => handleClick("bacenta")} />
                 </Grid.Item>
                 <Grid.Item>
-                    <ValueCard key={"pastoral_point"} title="Pastoral Points" value={15} handleClick={() => handleClick("pastoral_point")} />
+                    <ValueCard key={"pastoral_point"} title="Pastoral Points" value={totalPoints} handleClick={() => handleClick("pastoral_point")} />
                 </Grid.Item>
                 
             </Grid>
