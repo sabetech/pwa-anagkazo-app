@@ -7,6 +7,8 @@ import { IUserManager, ResponseError, ServerResponse, User } from '../../interfa
 import * as ResponseCodes from '../../constants/ResponseStatusCodes';
 import { UserContext } from '../../contexts/UserContext';
 import { useNavigate } from 'react-router-dom';
+import * as StorageKeys from '../../constants/StorageKeys';
+import "./Auth.css";
 
 const Welcome: React.FC = () => {
     const indexNumberRef = useRef(null);
@@ -20,7 +22,10 @@ const Welcome: React.FC = () => {
         mutationFn: async (indexNumber: number) => { 
             const response = await verifyStudent(indexNumber);
             if (response.status === ResponseCodes.OK) {
+                
                 storeUser(response.data.user as User)
+                localStorage.setItem(StorageKeys.USER, JSON.stringify(response.data.user))
+
                 if (response.data.user.already_exists) {
                     navigate('/existing-user')
                 } else {
@@ -84,7 +89,10 @@ const Welcome: React.FC = () => {
                         </Button>
                     }
                 >
-                    <Form.Item label='Type your Index Number Here' name='index_number' className={isFormEmpty ? 'shake-animation': undefined}>
+                    <Form.Item  
+                        label='Type your Index Number Here' 
+                        name='index_number' 
+                        className={isFormEmpty ? 'shake-animation': undefined}>
                     
                         <Input ref={indexNumberRef} onChange={onIndexNumberChange} placeholder='700101' clearable />
                         

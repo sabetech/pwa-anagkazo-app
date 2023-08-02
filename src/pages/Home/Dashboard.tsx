@@ -1,39 +1,80 @@
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../contexts/UserContext';
 import { IPastoralPoint, IUserManager } from '../../interfaces/ServerResponse';
-import { Grid, Space, FloatingBubble, Modal, Image,ProgressCircle  } from 'antd-mobile'
-import { ScanningOutline } from 'antd-mobile-icons'
+import { Grid, Space, FloatingBubble, Modal, Image,Button, ActionSheet  } from 'antd-mobile'
+import { ScanningOutline, MoreOutline } from 'antd-mobile-icons'
 import {QrScanner} from '@yudiel/react-qr-scanner';
 import { ValueCard } from '../../components/dashboard/ValueCard';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from 'react-query';
-import { getPastoralPoint } from '../../services/StudentData';
-import { ServerResponse } from '../../interfaces/ServerResponse';
+import { getPastoralPoint, getBussing } from '../../services/StudentData';
+import { ServerResponse, IBussing } from '../../interfaces/ServerResponse';
+import type {
+    Action
+} from 'antd-mobile/es/components/action-sheet';
 
 const Dashboard = () => {
     const navigate = useNavigate();
-    const [pastoralPoint, setPastoralPoint] = useState<IPastoralPoint[]>([]);
+    const [_, setPastoralPoint] = useState<IPastoralPoint[]>([]);
     const [totalPoints, setTotalPoints] = useState<number>(0);
-    const { user } = useContext(UserContext) as IUserManager;
+    const [visible, setVisible] = useState(false)
+    const { user, storeUser } = useContext(UserContext) as IUserManager;
     const {data: pastoralPoints, isLoading} = useQuery<ServerResponse>(['pastoral_points'], () => getPastoralPoint());
+    const { data: bussingData, isLoading: bussingLoading } = useQuery<ServerResponse>(['bussing'], () => getBussing(user?.index_number as number));
+    const [averageBussing, setAverageBussing] = useState<number>(0);
 
     useEffect(() => {
 
         if (pastoralPoints?.data) {
-            const parameters = pastoralPoints?.data.map((pastoralPoint: IPastoralPoint) => {
+            const parameters = pastoralPoints.data?.data.map((pastoralPoint: IPastoralPoint) => {
                 return pastoralPoint
-            })
+            });
             setPastoralPoint(parameters);
-
-            const myTotalPoints = pastoralPoints?.data.reduce((total: number, pastoralPoint: IPastoralPoint) => {
+            const myTotalPoints = pastoralPoints.data?.data.reduce((total: number, pastoralPoint: IPastoralPoint) => {
                 return total + pastoralPoint.pivot.points
-            },0)
-
+            }, 0)
             setTotalPoints(myTotalPoints as number);
         }
 
-
     },[pastoralPoints])
+
+    useEffect(() => {
+
+        if (bussingData?.data) {
+            const bussingDetails = bussingData.data?.data.map((bussing: IBussing) => {
+                return bussing;
+            });
+
+            const myAverageBussing = bussingDetails.reduce((total: number, bussing: IBussing) => {
+                return total + bussing.number_bussed
+            }, 0) / bussingDetails.length;
+            setAverageBussing(myAverageBussing.toFixed(0) as unknown as number);
+        }
+
+    }, [bussingData])
+    
+    const actions: Action[] = [
+        {
+            text: 'Logout', key: 'logout', danger: true,
+            onClick: () => {
+                Modal.confirm({
+                    title: 'Logout',
+                    content: 'Are you sure you want to logout?',
+                    confirmText: 'Yes',
+                    cancelText: 'No',
+                    showCloseButton: true,
+                    onConfirm: () => {
+                        localStorage.removeItem('user');
+                        storeUser(null as any);
+                        navigate('/');
+                    },
+                    onCancel: () => {
+                        setVisible(false)
+                    }
+                })
+            }
+        }
+    ]
 
     const decode = (decoded: string) => {
         console.log(decoded)
@@ -74,30 +115,27 @@ const Dashboard = () => {
                 margin: 'auto'
             }}>
                 <Space style={{ '--gap': '10px' }}>
+                    
                     <div style={{width: "35vw", height: "90%", marginTop: 20, marginLeft: 20}}>
                         <Image src='https://i.pravatar.cc/200' fit='cover' style={{ width: "95%", borderRadius: 20 }} />
                     </div>
+                    
                     <Space direction='vertical'>
-                        <div style={{marginTop: 30}}>
+                        <MoreOutline fontSize={32} color={'white'} style={{float:'right'}} onClick={() => setVisible(true)} />
+                        <div style={{marginTop: -30}}>
+                            
                             <div style={{ height: "20%", width: "55vw", marginTop: 20}}>
                                 <p style={{ fontFamily: 'Verdana, sans-serif', fontSize: 25, margin: 0, color: 'white' }}>Hello, <strong>{user?.name.split(" ")[0]}</strong></p>
-                            </div>
+                                </div>
                             <div style={{ height: "10%", width: "55vw", marginTop: 5}}>
-                                <h1 style={{ fontFamily: 'Verdana, sans-serif', fontSize: 14, fontWeight: 400, margin: 0, color: 'white' }}>SC - Class - Placeholder</h1>
+                                <h1 style={{ fontFamily: 'Verdana, sans-serif', fontSize: 14, fontWeight: 400, margin: 0, color: 'white' }}>{user?.class}</h1>
                             </div>
                             <div style={{ height: "10%", width: "55vw", marginTop: 5}}>
                                 <h1 style={{ fontFamily: 'Verdana, sans-serif', fontSize: 14, fontWeight: 400, margin: 0, color: 'white' }}>Attendance Rating:</h1>
-                                {/* <ProgressCircle
-                                    percent={60}
-                                    style={{
-                                    '--fill-color': 'var(--adm-color-success)',
-                                    }}
-                                >
-                                    60%
-                                </ProgressCircle> */}
                             </div>
                         </div>
                     </Space>
+                    
                 </Space>
             </div>
             <Grid columns={2} gap={2}>
@@ -108,12 +146,11 @@ const Dashboard = () => {
                     <ValueCard key={"bussingAttnAvg"} title="Fellowship" value={12} handleClick={() => handleClick("fellowship")} />
                 </Grid.Item>
                 <Grid.Item >
-                    <ValueCard key={"fellowshipOfferingAvg"} title="Bussing" value={10} handleClick={() => handleClick("bacenta")} />
+                    <ValueCard key={"fellowshipOfferingAvg"} title="Bussing" value={ averageBussing } handleClick={() => handleClick("bacenta")} />
                 </Grid.Item>
                 <Grid.Item>
                     <ValueCard key={"pastoral_point"} title="Pastoral Points" value={totalPoints} handleClick={() => handleClick("pastoral_point")} />
                 </Grid.Item>
-                
             </Grid>
             <FloatingBubble
                 style={{
@@ -137,6 +174,11 @@ const Dashboard = () => {
             >
             <ScanningOutline fontSize={32} />
         </FloatingBubble>
+        <ActionSheet
+            visible={visible}
+            actions={actions}
+            onClose={() => setVisible(false)}
+        />
         </>
     )
 }

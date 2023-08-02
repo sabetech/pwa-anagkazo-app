@@ -37,3 +37,9 @@ export interface IPastoralPoint {
     point_category: string;
     pivot: Pivot;
 }
+
+export interface IBussing {
+    id?: number;
+    date: string;
+    number_bussed: number;
+}

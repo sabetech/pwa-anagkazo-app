@@ -9,7 +9,7 @@ const FellowshipServiceDetails = () => {
 
     return (
         <>
-           <NavBar onBack={() => navigate("/dashboard")} style={{'--height': '60px'}} > Fellowship Service Detail </NavBar>
+           <NavBar onBack={() => navigate("/dashboard")} style={{'--height': '60px', backgroundColor: '#b12340', color:'white'}} > Fellowship Service Detail </NavBar>
            
             <List header='Attendance Average: 12 | Offering Average: 54.12'>
                 <List.Item arrow={false} prefix={<CheckOutline style={{ color: 'green' }}/>} description='Offering: 22.00' extra={'Attendance: 11'} onClick={() => {}} >

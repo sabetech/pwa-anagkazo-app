@@ -1,10 +1,11 @@
 import { useContext, useState } from 'react';
 import { UserContext } from '../../contexts/UserContext';
-import { IUserManager } from '../../interfaces/ServerResponse';
-import { AutoCenter, PasscodeInput, Form, Button, NumberKeyboard } from 'antd-mobile'
+import { IUserManager, ResponseError } from '../../interfaces/ServerResponse';
+import { AutoCenter, PasscodeInput, Form, Button, NumberKeyboard, Toast } from 'antd-mobile'
 import { useMutation } from 'react-query';
 import { authenticateStudent } from '../../services/UserManagement';
 import * as ResponseCodes from '../../constants/ResponseStatusCodes';
+
 import { useNavigate } from 'react-router-dom';
 
 interface loginProps {
@@ -21,8 +22,24 @@ const ExistingUser = () => {
         mutationFn: async ({indexNumber, passcode}: loginProps) => {
             const response = await authenticateStudent(indexNumber, passcode);
             if (response.status === ResponseCodes.OK) {
+                
                 navigate('/dashboard');
             }
+        },
+        onSuccess: () => {
+
+        },
+        onError: (error: ResponseError) => {
+            console.log(error)
+            if (error.response?.status === ResponseCodes.UNAUTHORIZED) {
+                Toast.show({
+                    content: error.response.data.message,
+                    duration: 4000,
+                    icon: 'fail',
+                    position: 'top'
+                })
+            }
+
         }
     })
 

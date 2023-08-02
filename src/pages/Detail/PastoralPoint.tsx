@@ -15,16 +15,16 @@ const PastoralPointDetail = () => {
     const navigate = useNavigate()
     const { user } = useContext(UserContext) as IUserManager;
     // user?.index_number as number
-    const {data: pastoralPoints, isLoading} = useQuery<ServerResponse>(['pastoral_points'], () => getPastoralPoint());
+    const {data: pastoralPoints, isLoading} = useQuery<ServerResponse>(['pastoral_points'], () => getPastoralPoint(user?.index_number as number));
 
     useEffect(() => {
         if (pastoralPoints?.data) {
-            const parameters = pastoralPoints?.data.map((pastoralPoint: IPastoralPoint) => {
+            const parameters = pastoralPoints.data?.data.map((pastoralPoint: IPastoralPoint) => {
                 return pastoralPoint
             })
             setParameters(parameters);
 
-            const myTotalPoints = pastoralPoints?.data.reduce((total: number, pastoralPoint: IPastoralPoint) => {
+            const myTotalPoints = pastoralPoints.data?.data.reduce((total: number, pastoralPoint: IPastoralPoint) => {
                 return total + pastoralPoint.pivot.points
             }, 0);
             setTotalPoints(myTotalPoints as number);
@@ -34,12 +34,12 @@ const PastoralPointDetail = () => {
 
     return (
         <>
-            <SafeArea position='top' />
-           <NavBar onBack={() => navigate("/dashboard")} style={{'--height': '60px'}} > Fellowship Service Detail </NavBar>
+           <SafeArea position='top' />
+           <NavBar onBack={() => navigate("/dashboard")} style={{'--height': '60px', backgroundColor: '#b12340', color:'white'}} > Fellowship Service Detail </NavBar>
            
-            <List header={'Pastoral Point: '+totalPoints} style={{height: "80vh", marginBottom: 20}}>
+            <List header={'Pastoral Point: '+totalPoints} style={{overflow: 'scroll', height: "80vh", marginBottom: 20}}>
                 {
-                    isLoading ? <SpinLoading /> : pastoralPoints?.data.map((pastoralPoint: IPastoralPoint) => {
+                    isLoading ? <SpinLoading /> : parameters.map((pastoralPoint: IPastoralPoint) => {
                         return (
                             <List.Item key={pastoralPoint.id} arrow={false} prefix={<CheckOutline style={{ color: 'green' }}/>} extra={'Point:'+pastoralPoint.pivot.points } >
                                 {pastoralPoint.parameter}

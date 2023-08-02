@@ -9,7 +9,7 @@ const AttendanceDetails = () => {
 
     return (
         <>
-           <NavBar onBack={() => navigate("/dashboard")} style={{'--height': '60px'}} > Attendance Detail </NavBar>
+           <NavBar onBack={() => navigate("/dashboard")} style={{'--height': '60px', backgroundColor: '#b12340', color:'white'}} > Attendance Detail </NavBar>
            <Tabs defaultActiveKey='1'>
                 <Tabs.Tab title='Vision' key='1'>
                 <List header='Vision Lectures: 89%'>
