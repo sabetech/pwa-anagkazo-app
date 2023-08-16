@@ -1,19 +1,16 @@
 import { useState, useContext, useEffect, useRef } from 'react';
 import { UserContext } from '../../contexts/UserContext';
 import { IUserManager } from '../../interfaces/ServerResponse';
-import { NavBar, List, FloatingBubble, Modal, Form, Stepper, Button, DatePicker, ImageUploader, InputRef } from 'antd-mobile'
-import { CheckOutline, AddOutline, PictureOutline  } from 'antd-mobile-icons';
+import { NavBar, List, FloatingBubble, Modal, Form, Stepper, Button, DatePicker, ImageUploader } from 'antd-mobile'
+import { CheckOutline, AddOutline  } from 'antd-mobile-icons';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQuery } from 'react-query';
 import { postNumberBussed, getBussing } from '../../services/StudentData';
 import { ResponseError,ServerResponse, IBussing } from '../../interfaces/ServerResponse';
 import { ImageUploadItem } from 'antd-mobile/es/components/image-uploader'
+import { IBussingInfo } from '../../interfaces/BussingInfo';
 
 const now = new Date()
-interface bussingProps {
-    numberBussed: number;
-    bussingImage: File;
-}
 
 const BussingDetails = () => {
     const { user } = useContext(UserContext) as IUserManager;
@@ -23,6 +20,7 @@ const BussingDetails = () => {
     const [bussingImage, setBussingImage] = useState<File>();
     const [showDateSelector, setShowDateSelector] = useState<boolean>(false);
     const [date, setDate] = useState<Date>(now);
+    const [bussingForm] = Form.useForm()
     
     const { data: bussingData, isLoading: bussingLoading } = useQuery<ServerResponse>(['bussing'], () => getBussing(user?.index_number as number));
 
@@ -40,9 +38,18 @@ const BussingDetails = () => {
         }
     }, [bussingData]);
 
+    useEffect(() => {
+        
+        const dateStringDisplay = document.getElementById("date_string_display");
+        if (dateStringDisplay) {
+            dateStringDisplay.innerHTML = date.toDateString();
+        }
+        
+    },[date])
+
     const { mutate, isLoading } = useMutation({
-        mutationFn: async ({numberBussed, bussingImage}: bussingProps) => {
-            const response = await postNumberBussed(user?.index_number, numberBussed, bussingImage);
+        mutationFn: async (bussingInfo: IBussingInfo) => {
+            return await postNumberBussed({...bussingInfo, bussing_image: bussingImage}) //This hack is what is making me get access to the bussing Image after several hours
         },
         onSuccess: () => {
 
@@ -52,15 +59,21 @@ const BussingDetails = () => {
         }
     });
 
-    const onBussingEntryConfirm = async ({number_bussed}: any) => {
-        console.log(bussingImage)
-        console.log("NUMBEr BUSSED", number_bussed)
-        console.log("DATE:::", date)
+    const onBussingEntryConfirm = async () => {
+        const number_bussed = bussingForm.getFieldValue("number_bussed")
+    
+        mutate({
+            date: date,
+            number_bussed: number_bussed,
+            index_number: user?.index_number,
+            bussing_image: bussingImage
+            } as IBussingInfo);
     }
 
     const loadImage = async (file: File) => {
-        console.log(file)
+        
         setBussingImage(file);
+        
         return await {
             url: URL.createObjectURL(file),
           }
@@ -95,13 +108,18 @@ const BussingDetails = () => {
                     onClose: () => {
                         setShowDateSelector(false)
                     },
+                    actions: [{
+                        key: 'saveBussingDetails',
+                        text: 'Save',
+                        primary: true
+                    }],
+                    onAction: () => {
+                        console.log("SAVING")
+                        onBussingEntryConfirm()
+                    },
                     content: <>
-                    <Form layout='horizontal' footer={
-                        <Button block type='submit' color='primary' size='large'>
-                            Submit
-                        </Button>
-                         }
-                         onFinish={onBussingEntryConfirm}
+                    <Form layout='horizontal' 
+                        form={bussingForm}
                          >
                         <>
                             <Button
@@ -112,7 +130,7 @@ const BussingDetails = () => {
                             >
                                 Change Date
                             </Button>
-                            <label>{ date.toDateString() }</label>
+                            <label id="date_string_display">{ date.toDateString() }</label>
                         </>
                         <Form.Item name='number_bussed' label='Number Bussed' childElementPosition='normal'
                             initialValue={0}
@@ -125,18 +143,14 @@ const BussingDetails = () => {
                         >
                             <Stepper />
                         </Form.Item>
-                        <ImageUploader
-                            value={fileList}
-                            onChange={setFileList}
-                            maxCount={1}
-                            upload={loadImage}
-                            />
-
-                        {/* <Form.Item name='bussing_image' label='Upload Picture'>
-                            <Input ref={fileInputRef} type="file" accept="image/*" onChange={loadImage} />
-                            
-                            <img id="output" width="100" />
-                        </Form.Item> */}
+                        <Form.Item name='bussing_image' label='Upload Picture'>
+                            <ImageUploader
+                                value={fileList}
+                                onChange={setFileList}
+                                maxCount={1}
+                                upload={loadImage}
+                                />
+                        </Form.Item>
                         </Form>
                     </>,
                     showCloseButton: true,

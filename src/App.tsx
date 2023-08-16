@@ -32,7 +32,7 @@ function App() {
           <Route path='/pastoral_point' element={<PastoralPointDetail />} />
         </Routes>
       </Router>
-      <Footer label='(c) Anagkazo Lite 2023' style={{position: 'fixed', bottom: 10}}></Footer>
+      {/* <Footer label='(c) Anagkazo Lite 2023' style={{position: 'fixed', bottom: 10}}></Footer> */}
     </div>
     
     </QueryClientProvider>
