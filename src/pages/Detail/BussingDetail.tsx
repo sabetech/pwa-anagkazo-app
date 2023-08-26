@@ -9,6 +9,7 @@ import { postNumberBussed, getBussing } from '../../services/StudentData';
 import { ResponseError,ServerResponse, IBussing } from '../../interfaces/ServerResponse';
 import { ImageUploadItem } from 'antd-mobile/es/components/image-uploader'
 import { IBussingInfo } from '../../interfaces/BussingInfo';
+import { getUserFriendlyDateFormat } from '../../utils/helper';
 
 const now = new Date()
 
@@ -89,7 +90,7 @@ const BussingDetails = () => {
                 {
                     numberBussed.map((bussing: IBussing) => 
                         <List.Item key={bussing.id} arrow={false} prefix={<CheckOutline style={{ color: 'green' }}/>} extra={'Attendance:'+bussing.number_bussed} onClick={() => {}} >
-                            {bussing.date}
+                            { getUserFriendlyDateFormat(bussing.date) }
                         </List.Item>
                     )
                 }

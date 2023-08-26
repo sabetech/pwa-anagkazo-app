@@ -5,3 +5,8 @@ export function getServerDateFormat(date: Date): string {
 
     return `${year}-${month}-${day}`;
 }
+
+export function getUserFriendlyDateFormat(date: string): string {
+    const dateObj = new Date(date);
+    return dateObj.toLocaleDateString('en-GB', {year: 'numeric', month: 'short', day: 'numeric'});
+}
