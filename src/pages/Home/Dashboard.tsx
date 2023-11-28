@@ -6,14 +6,17 @@ import { ScanningOutline, MoreOutline } from 'antd-mobile-icons'
 import {QrScanner} from '@yudiel/react-qr-scanner';
 import { ValueCard } from '../../components/dashboard/ValueCard';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
 import { getPastoralPoint, getBussing } from '../../services/StudentData';
 import { ServerResponse, IBussing } from '../../interfaces/ServerResponse';
+import { postAttendance } from '../../services/Attendance';
 import type {
     Action
 } from 'antd-mobile/es/components/action-sheet';
+import { IAttendanceRequestInfo } from '../../interfaces/Attendance';
 
 const Dashboard = () => {
+    
     const navigate = useNavigate();
     const [_, setPastoralPoint] = useState<IPastoralPoint[]>([]);
     const [totalPoints, setTotalPoints] = useState<number>(0);
@@ -22,6 +25,19 @@ const Dashboard = () => {
     const {data: pastoralPoints, isLoading} = useQuery<ServerResponse>(['pastoral_points'], () => getPastoralPoint());
     const { data: bussingData, isLoading: bussingLoading } = useQuery<ServerResponse>(['bussing'], () => getBussing(user?.index_number as number));
     const [averageBussing, setAverageBussing] = useState<number>(0);
+
+    const { mutate, isLoading: scanning } = useMutation({
+        mutationFn: async (values: IAttendanceRequestInfo) => {
+            return await postAttendance(user?.id as number, values)
+        },
+        retry: 3,
+        onSuccess: () => {
+
+        },
+        onError: (error) => {
+            console.log(error)
+        }
+    });
 
     useEffect(() => {
 
@@ -76,8 +92,12 @@ const Dashboard = () => {
         }
     ]
 
+    let requestCount = 0;
     const decode = (decoded: string) => {
-        console.log(decoded)
+        if (requestCount > 0) return;
+        requestCount++;
+        mutate(JSON.parse(decoded) as IAttendanceRequestInfo)
+        Modal.clear();
     }
 
     const handleClick = (label: string) => {

@@ -74,7 +74,7 @@ const Welcome: React.FC = () => {
     return (
         <div style={{width: "100%"}}>
             <SafeArea position='top' />
-            <Space direction='vertical' align='center' style={{ '--gap': '100px' }} block>
+            <Space direction='vertical' align='center' style={{ '--gap': '70px' }} block>
 
                 <h1 style={{textAlign: 'center'}}>Welcome to Anagkazo Lite</h1>
                 <Image 
