@@ -3,3 +3,10 @@ export interface IAttendanceRequestInfo {
     event: string;
     service_type: 'academic';
 }
+
+export type IAttendanceResponseInfo = {
+    event: string;
+    date: string;
+    time: string;
+    student_id: number;
+}

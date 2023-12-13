@@ -22,7 +22,8 @@ const Dashboard = () => {
     const [totalPoints, setTotalPoints] = useState<number>(0);
     const [visible, setVisible] = useState(false)
     const { user, storeUser } = useContext(UserContext) as IUserManager;
-    const {data: pastoralPoints, isLoading} = useQuery<ServerResponse>(['pastoral_points'], () => getPastoralPoint());
+    console.log(user);
+    const {data: pastoralPoints, isLoading} = useQuery<ServerResponse>(['pastoral_points'], () => getPastoralPoint(user?.index_number as number));
     const { data: bussingData, isLoading: bussingLoading } = useQuery<ServerResponse>(['bussing'], () => getBussing(user?.index_number as number));
     const [averageBussing, setAverageBussing] = useState<number>(0);
 
@@ -151,7 +152,7 @@ const Dashboard = () => {
                                 <h1 style={{ fontFamily: 'Verdana, sans-serif', fontSize: 14, fontWeight: 400, margin: 0, color: 'white' }}>{user?.class}</h1>
                             </div>
                             <div style={{ height: "10%", width: "55vw", marginTop: 5}}>
-                                <h1 style={{ fontFamily: 'Verdana, sans-serif', fontSize: 14, fontWeight: 400, margin: 0, color: 'white' }}>Attendance Rating:</h1>
+                                <h1 style={{ fontFamily: 'Verdana, sans-serif', fontSize: 14, fontWeight: 400, margin: 0, color: 'white' }}>Pastoral Point: <strong>{totalPoints}</strong></h1>
                             </div>
                         </div>
                     </Space>
@@ -160,9 +161,9 @@ const Dashboard = () => {
             </div>
             <Grid columns={2} gap={2}>
                 <Grid.Item >
-                    <ValueCard key={"fellowshipAttn"} title="Attendance" value={15} handleClick={() => handleClick("attendance")  } />
+                    <ValueCard key={"event_attendance"} title="Attendance" value={15} handleClick={() => handleClick("attendance")  } />
                 </Grid.Item>
-                <Grid.Item>
+                {/* <Grid.Item>
                     <ValueCard key={"bussingAttnAvg"} title="Fellowship" value={12} handleClick={() => handleClick("fellowship")} />
                 </Grid.Item>
                 <Grid.Item >
@@ -170,7 +171,7 @@ const Dashboard = () => {
                 </Grid.Item>
                 <Grid.Item>
                     <ValueCard key={"pastoral_point"} title="Pastoral Points" value={totalPoints} handleClick={() => handleClick("pastoral_point")} />
-                </Grid.Item>
+                </Grid.Item> */}
             </Grid>
             <FloatingBubble
                 style={{
