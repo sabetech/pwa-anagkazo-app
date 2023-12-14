@@ -136,9 +136,9 @@ const Dashboard = () => {
                 margin: 'auto'
             }}>
                 <Space style={{ '--gap': '10px' }}>
-                    
+                    {/* https://via.placeholder.com/250 */}
                     <div style={{width: "35vw", height: "90%", marginTop: 20, marginLeft: 20}}>
-                        <Image src='https://i.pravatar.cc/200' fit='cover' style={{ width: "95%", borderRadius: 20 }} />
+                        <Image src='https://via.placeholder.com/200' fit='cover' style={{ width: "95%", borderRadius: 20 }} />
                     </div>
                     
                     <Space direction='vertical'>

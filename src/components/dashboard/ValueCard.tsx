@@ -1,3 +1,4 @@
+import { SystemQRcodeOutline } from 'antd-mobile-icons'
 import { EventHandler } from "react";
 
 type ValueCardProps = {
@@ -26,7 +27,7 @@ export const ValueCard: React.FC<ValueCardProps> = ({title, value, handleClick }
         fontWeight: 700,
         margin: -10,
     }}>
-        { value }
+        <SystemQRcodeOutline />
     </p>
     <div style={{
         textAlign: 'center',
