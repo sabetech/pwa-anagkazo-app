@@ -6,6 +6,6 @@ export const postAttendance = async (indexnumber: number = 701274, attendanceInf
     return (await api.post('/attendance/'+indexnumber, attendanceInfo, {}));
 }
 
-export const getAttendance = async (indexnumber: number = 701274): Promise<AxiosResponse> => {
-    return (await api.get('/attendance/'+indexnumber, {}));
+export const getAttendance = async (indexnumber: number = 701274, event: string): Promise<AxiosResponse> => {
+    return (await api.get(`/attendance/${indexnumber}?event=${event}`, {}));
 }
