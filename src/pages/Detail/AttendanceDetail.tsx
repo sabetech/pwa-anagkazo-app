@@ -1,46 +1,55 @@
+import { useContext, useEffect, useState } from 'react';
 import { NavBar, Tabs, List, SpinLoading } from 'antd-mobile'
 import { CheckOutline, ExclamationCircleOutline } from 'antd-mobile-icons';
+import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
+import { ServerResponse, IUserManager } from '../../interfaces/ServerResponse';
+import { UserContext } from '../../contexts/UserContext';
+import { getAttendance } from '../../services/Attendance';
+import { IAttendanceResponseInfo } from '../../interfaces/Attendance';
+import { VisionLecturesAttendance } from './Attendance/Vision';
 
+type AttendanceStructure = {
+    vision: {
+        [key: string]: {
+            timeIn?: string,
+            timeOut?: string,
+        }
+    }
+}
 
 const AttendanceDetails = () => {
     const navigate = useNavigate()
-
+    const { user } = useContext(UserContext) as IUserManager;
+    const [attendanceData, setAttendanceData] = useState([]);
 
     return (
         <>
-           <NavBar onBack={() => navigate("/dashboard")} style={{'--height': '60px'}} > Attendance Detail </NavBar>
+           <NavBar onBack={() => navigate("/dashboard")} style={{'--height': '60px', backgroundColor: '#b12340', color:'white'}} > Attendance Detail </NavBar>
            <Tabs defaultActiveKey='1'>
                 <Tabs.Tab title='Vision' key='1'>
-                <List header='Vision Lectures: 89%'>
-                    <List.Item arrow={false} prefix={<CheckOutline style={{ color: 'green' }}/>} title='Time in: 6:01am' description='Time out: 09:00am' extra={<p style={{ color: 'green' }}>Present</p>} onClick={() => {}} >
-                        6th July 2023
-                    </List.Item>
-                    <List.Item arrow={false} prefix={<ExclamationCircleOutline style={{ color: 'red' }}/>} title='Time in: N/A' description='Time out: N/A' extra={<p style={{ color: 'red' }}>Absent</p>} onClick={() => {}}>
-                        5 July 2023
-                    </List.Item>
-                    <List.Item arrow={false} prefix={<SpinLoading style={{ '--size': '18px' }} />} title='Time in: 6:31am' description='Time out: 09:00am' extra={<>Late</>} onClick={() => {}}>
-                        4 July 2023
-                    </List.Item>
-                </List>
+                    <VisionLecturesAttendance />
                 </Tabs.Tab>
                 <Tabs.Tab title='Pillar' key='2'>
-                    2
+                    Work In Progress
                 </Tabs.Tab>
                 <Tabs.Tab title='Foundational' key='3'>
-                    3
+                    Work In Progress    
                 </Tabs.Tab>
                 <Tabs.Tab title='BMCDR' key='4'>
-                    4
+                    Work In Progress
                 </Tabs.Tab>
-                <Tabs.Tab title='Flat White' key='5'>
-                    5
+                <Tabs.Tab title='Anagkazo Live' key='5'>
+                    Work In Progress
                 </Tabs.Tab>
-                <Tabs.Tab title='Caramel Macchiato' key='6'>
-                    6
+                <Tabs.Tab title='4AM Prayer' key='6'>
+                    Work In Progress
                 </Tabs.Tab>
-                <Tabs.Tab title='Cafe Mocha' key='7'>
-                    7
+                <Tabs.Tab title='Anagkazo Encounter' key='7'>
+                    Work In Progress
+                </Tabs.Tab>
+                <Tabs.Tab title='Sunday Service' key='8'>
+                    Work In Progress
                 </Tabs.Tab>
             </Tabs>
         </>

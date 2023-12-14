@@ -8,7 +8,12 @@
 }
 
 .App {
-  height: 100vh;
+  height: 96vh;
+  /* width: 25vw; */
+  /* border: 1px solid #b12340; */
+  border-radius: 30px;
+  margin: auto;
+  background-color: rgb(250, 250, 250);
 }
 
 .shake-animation {
@@ -24,7 +29,15 @@
   100% { transform: skewX(0deg); }
  }
 
-
+ @media screen and (max-width: 280px) {
+  .App {
+    height: 96vh;
+    /* width: 96vw; */
+    border: 1px solid #19ea62;
+    border-radius: 30px;
+    margin: auto;
+  }
+ }
  
 /* #root {
   max-width: 1280px;

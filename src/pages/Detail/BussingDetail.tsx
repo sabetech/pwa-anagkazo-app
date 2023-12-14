@@ -1,42 +1,99 @@
-import { useState } from 'react';
-import { NavBar, List, FloatingBubble, Modal, Form, Stepper, ImageUploader } from 'antd-mobile'
-import { ImageUploadItem } from 'antd-mobile/es/components/image-uploader'
+import { useState, useContext, useEffect, useRef } from 'react';
+import { UserContext } from '../../contexts/UserContext';
+import { IUserManager } from '../../interfaces/ServerResponse';
+import { NavBar, List, FloatingBubble, Modal, Form, Stepper, Button, DatePicker, ImageUploader } from 'antd-mobile'
 import { CheckOutline, AddOutline  } from 'antd-mobile-icons';
 import { useNavigate } from 'react-router-dom';
+import { useMutation, useQuery } from 'react-query';
+import { postNumberBussed, getBussing } from '../../services/StudentData';
+import { ResponseError,ServerResponse, IBussing } from '../../interfaces/ServerResponse';
+import { ImageUploadItem } from 'antd-mobile/es/components/image-uploader'
+import { IBussingInfo } from '../../interfaces/BussingInfo';
+import { getUserFriendlyDateFormat } from '../../utils/helper';
+
+const now = new Date()
 
 const BussingDetails = () => {
+    const { user } = useContext(UserContext) as IUserManager;
     const navigate = useNavigate();
-    const [fileList, setFileList] = useState<ImageUploadItem[]>()
+    const [numberBussed, setNumberBussed] = useState<IBussing[]>([]);
+    const [bussingTotal, setBussingTotal] = useState<number>(0);
+    const [bussingImage, setBussingImage] = useState<File>();
+    const [showDateSelector, setShowDateSelector] = useState<boolean>(false);
+    const [date, setDate] = useState<Date>(now);
+    const [bussingForm] = Form.useForm()
+    
+    const { data: bussingData, isLoading: bussingLoading } = useQuery<ServerResponse>(['bussing'], () => getBussing(user?.index_number as number));
 
-    const onBussingEntryConfirm = () => {
-        console.log('ok')
+    useEffect(() => {
+        if (bussingData?.data) {
+            const bussingDetails = bussingData.data?.data.map((bussing: IBussing) => {
+                return bussing;
+            });
+
+            setNumberBussed(bussingDetails as IBussing[])
+            setBussingTotal(bussingDetails.reduce((total: number, bussing: IBussing) => {
+                return total + bussing.number_bussed
+            }, 0));
+
+        }
+    }, [bussingData]);
+
+    useEffect(() => {
+        
+        const dateStringDisplay = document.getElementById("date_string_display");
+        if (dateStringDisplay) {
+            dateStringDisplay.innerHTML = date.toDateString();
+        }
+        
+    },[date])
+
+    const { mutate, isLoading } = useMutation({
+        mutationFn: async (bussingInfo: IBussingInfo) => {
+            return await postNumberBussed({...bussingInfo, bussing_image: bussingImage}) //This hack is what is making me get access to the bussing Image after several hours
+        },
+        onSuccess: () => {
+
+        },
+        onError: (error: ResponseError) => {
+            console.log(error)
+        }
+    });
+
+    const onBussingEntryConfirm = async () => {
+        const number_bussed = bussingForm.getFieldValue("number_bussed")
+    
+        mutate({
+            date: date,
+            number_bussed: number_bussed,
+            index_number: user?.index_number,
+            bussing_image: bussingImage
+            } as IBussingInfo);
     }
 
-    const upload = async (file: File) : Promise<ImageUploadItem> => {
-        return new Promise((resolve, reject) => {
-            const imageUploadItem: ImageUploadItem = {url: 'http://url_is_here'}
-              resolve(imageUploadItem);
-              if (false) {
-                reject(new Error('error'));
-              }
-        });
-
+    const loadImage = async (file: File) => {
+        
+        setBussingImage(file);
+        
+        return await {
+            url: URL.createObjectURL(file),
+          }
     }
+
+    const [fileList, setFileList] = useState<ImageUploadItem[]>([]);
 
     return (
         <>
-           <NavBar onBack={() => navigate("/dashboard")} style={{'--height': '60px'}} > Bussing Detail </NavBar>
+           <NavBar onBack={() => navigate("/dashboard")} style={{'--height': '60px', backgroundColor: '#b12340', color:'white'}} > Bussing Detail </NavBar>
            
-            <List header='Bussing Average: 12'>
-                <List.Item arrow={false} prefix={<CheckOutline style={{ color: 'green' }}/>} extra={'Attendance: 11'} onClick={() => {}} >
-                    6th July 2023
-                </List.Item>
-                <List.Item arrow={false} prefix={<CheckOutline style={{ color: 'green' }}/>} extra={'Attendance: 11'} onClick={() => {}} >
-                    5th July 2023
-                </List.Item>
-                <List.Item arrow={false} prefix={<CheckOutline style={{ color: 'green' }}/>} extra={'Attendance: 11'} onClick={() => {}} >
-                    4th July 2023
-                </List.Item>
+            <List header={'Bussing Total:' + bussingTotal}>
+                {
+                    numberBussed.map((bussing: IBussing) => 
+                        <List.Item key={bussing.id} arrow={false} prefix={<CheckOutline style={{ color: 'green' }}/>} extra={'Attendance:'+bussing.number_bussed} onClick={() => {}} >
+                            { getUserFriendlyDateFormat(bussing.date) }
+                        </List.Item>
+                    )
+                }
             </List>
             <FloatingBubble
                 style={{
@@ -46,10 +103,37 @@ const BussingDetails = () => {
                     '--z-index': '10px'
                 }}
                onClick={() => {
-                Modal.alert({
+                Modal.show({
                     title: 'Enter Bussing Details',
+                    closeOnAction: true,
+                    onClose: () => {
+                        setShowDateSelector(false)
+                    },
+                    actions: [{
+                        key: 'saveBussingDetails',
+                        text: 'Save',
+                        primary: true
+                    }],
+                    onAction: () => {
+                        console.log("SAVING")
+                        onBussingEntryConfirm()
+                    },
                     content: <>
-                        <Form.Item name='number_bussed' label='Number Bussed' childElementPosition='right'
+                    <Form layout='horizontal' 
+                        form={bussingForm}
+                         >
+                        <>
+                            <Button
+                                onClick={() => {
+                                    setShowDateSelector(true)
+                                }}
+                                color='primary' fill='none'
+                            >
+                                Change Date
+                            </Button>
+                            <label id="date_string_display">{ date.toDateString() }</label>
+                        </>
+                        <Form.Item name='number_bussed' label='Number Bussed' childElementPosition='normal'
                             initialValue={0}
                             rules={[
                               {
@@ -59,21 +143,37 @@ const BussingDetails = () => {
                             ]}
                         >
                             <Stepper />
+                        </Form.Item>
+                        <Form.Item name='bussing_image' label='Upload Picture'>
                             <ImageUploader
                                 value={fileList}
                                 onChange={setFileList}
-                                upload={upload}
                                 maxCount={1}
-                            />
+                                upload={loadImage}
+                                />
                         </Form.Item>
+                        </Form>
                     </>,
-                    confirmText: 'Ok',
-                    onConfirm: () => onBussingEntryConfirm(),
+                    showCloseButton: true,
                 })
                }}
             >
+                
             <AddOutline fontSize={32} />
         </FloatingBubble>
+        <DatePicker
+            title='Select Date'
+            style={{zIndex: 20}}
+            visible={showDateSelector}
+            onClose={() => {
+                setShowDateSelector(false)
+            }}
+            precision='day'
+            onConfirm={val => {
+                console.log(val as Date)
+                setDate(val as Date)
+            }}
+        />
         </>
     )
 }

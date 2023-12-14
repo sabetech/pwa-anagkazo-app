@@ -1,5 +1,28 @@
 import axios from 'axios';
 const BASE_URL = import.meta.env.VITE_BASE_URL
+import { getServerDateFormat } from '../../utils/helper';
+
+const postWithFile = (url: string, data: any, headers: object) => {
+    const formData = new FormData();
+    console.log("BEFORE FORM DATA:::    ", data)
+    
+    Object.keys(data).forEach(key => {
+        if (key === "date") {
+            formData.append(key, getServerDateFormat(data[key]));
+        }else{
+            formData.append(key, data[key]);
+        }
+    });
+    
+    return axios(BASE_URL+url, {
+         method: 'POST',
+         headers: {
+            'Content-Type': '"multipart/form-data"',
+           ...headers,
+         },
+         data: formData
+       });
+}
 
 const post = (url: string, data: any, headers: object) => {
     const formData = new FormData();
@@ -11,7 +34,7 @@ const post = (url: string, data: any, headers: object) => {
     return axios(BASE_URL+url, {
          method: 'POST',
          headers: {
-           'Content-Type': '"application/json"',
+            'Content-Type': '"application/json"',
            ...headers,
          },
          data: formData
@@ -65,7 +88,7 @@ const auth = (url: string, data: any, headers: object) => {
     });
 }
 
-export { post, get, deleteRequest, put, auth}
+export { postWithFile, post, get, deleteRequest, put, auth}
 
 
 
