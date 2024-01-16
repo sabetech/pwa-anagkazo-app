@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../contexts/UserContext';
 import { IPastoralPoint, IUserManager } from '../../interfaces/ServerResponse';
-import { Grid, Space, FloatingBubble, Modal, Image,Button, ActionSheet  } from 'antd-mobile'
+import { Grid, Space, FloatingBubble, Modal, Image,Button, ActionSheet, Dialog  } from 'antd-mobile'
 import { ScanningOutline, MoreOutline } from 'antd-mobile-icons'
 import {QrScanner} from '@yudiel/react-qr-scanner';
 import { ValueCard } from '../../components/dashboard/ValueCard';
@@ -97,8 +97,20 @@ const Dashboard = () => {
     const decode = (decoded: string) => {
         if (requestCount > 0) return;
         requestCount++;
-        mutate(JSON.parse(decoded) as IAttendanceRequestInfo)
+        let attnInfo = JSON.parse(decoded) as IAttendanceRequestInfo
+        mutate(attnInfo)
         Modal.clear();
+
+        Dialog.alert({
+            title: attnInfo.event,
+            content: 'Attendance marked successfully',
+            confirmText: 'OK!',
+            onConfirm: () => {
+                requestCount = 0;
+            }
+        
+        })
+
     }
 
     const handleClick = (label: string) => {
