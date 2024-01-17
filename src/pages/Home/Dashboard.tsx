@@ -22,7 +22,6 @@ const Dashboard = () => {
     const [totalPoints, setTotalPoints] = useState<number>(0);
     const [visible, setVisible] = useState(false)
     const { user, storeUser } = useContext(UserContext) as IUserManager;
-    console.log(user);
     const {data: pastoralPoints, isLoading} = useQuery<ServerResponse>(['pastoral_points'], () => getPastoralPoint(user?.index_number as number));
     const { data: bussingData, isLoading: bussingLoading } = useQuery<ServerResponse>(['bussing'], () => getBussing(user?.index_number as number));
     const [averageBussing, setAverageBussing] = useState<number>(0);
