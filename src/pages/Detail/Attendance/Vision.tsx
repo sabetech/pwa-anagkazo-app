@@ -5,23 +5,67 @@ import { useQuery } from 'react-query';
 import { getAttendance } from '../../../services/Attendance';
 import { ServerResponse, IUserManager } from '../../../interfaces/ServerResponse';
 import { UserContext } from '../../../contexts/UserContext';
+import { getUserFriendlyDateFormat, isTimeGreaterThan } from '../../../utils/helper';
+import { AttendanceInfo } from '../../../types/attendanceInfo';
 
 export const VisionLecturesAttendance = () => {
     const { user } = useContext(UserContext) as IUserManager;
-    const {data: attendance, isLoading} = useQuery<ServerResponse>(['attendance'], () => getAttendance(user?.index_number as number, 'VISION'));
+    const {data: attendance, isLoading} = useQuery<ServerResponse>(['vision_attendance'], () => getAttendance(user?.index_number as number, 'VISION'));
+
+    const getAttendanceStatus = (attendance: AttendanceInfo)  => {
+        
+        if ((attendance.time_in) && (attendance.time_out)) {
+            if (isTimeGreaterThan(attendance.time_in, attendance.late_condition)) {
+                return <p style={{ color: 'red' }}>Late</p>
+            }else{
+                return (<p style={{ color: 'green' }}>Present</p>)
+            }
+        }
+        
+        if (attendance.time_in) {
+            if (isTimeGreaterThan(attendance.time_in, attendance.late_condition)) 
+            return <><p style={{ color: 'red' }}>Late <span style={{color: 'grey'}}>(-10 mins)</span> </p></>
+            else return <p style={{ color: 'red' }}> Absent </p> 
+        }
+
+        if (attendance.time_out) {
+            return (<p style={{ color: 'red' }}>
+                Late 
+                    </p>)
+        }
+        return <p style={{ color: 'red' }}>Absent</p>
+    }
 
     return (
-        <List header='Vision Lectures'>     
+        <List header='Vision Lectures'>
+            {
+                isLoading ? <List.Item><SpinLoading style={{ '--size': '18px' }} /></List.Item> :
+                attendance?.data?.data.map((attendance: AttendanceInfo) => {
+                    return <List.Item arrow={false} 
+                    prefix={attendance?.time_in ? 
+                    <CheckOutline style={{ color: 'green' }}/> 
+                    : 
+                    <ExclamationCircleOutline style={{ color: 'red' }}/>} 
+                    title={`Time in: ${attendance?.time_in ?? "Not Scanned In"}`} 
+                    description={`Time out: ${attendance?.time_out ?? "Not Scanned Out"}`} 
+                    extra={<strong>{getAttendanceStatus(attendance)}</strong>}
+                    > 
+                        {getUserFriendlyDateFormat(attendance?.date)}
+                    </List.Item>
+                })
+            }
+
+
             {/* <List.Item arrow={false} prefix={<CheckOutline style={{ color: 'green' }}/>} title='Time in: 6:01am' description='Time out: 09:00am' extra={<p style={{ color: 'green' }}>Present</p>} onClick={() => {}} >
                 6th Work In Progress 2023
             </List.Item> */}
             {/* <List.Item arrow={false} prefix={<ExclamationCircleOutline style={{ color: 'red' }}/>} title='Time in: N/A' description='Time out: N/A' extra={<p style={{ color: 'red' }}>Absent</p>} onClick={() => {}}>
                 5 July 2023
             </List.Item>*/}
-            <List.Item arrow={false} prefix={<SpinLoading style={{ '--size': '18px' }} />} title='Time in: 6:31am' description='Time out: 09:00am' extra={<>Late</>} onClick={() => {}}>
+            {/* <List.Item arrow={false} prefix={<SpinLoading style={{ '--size': '18px' }} />} title='Time in: 6:31am' description='Time out: 09:00am' extra={<>Late</>} onClick={() => {}}>
                 6th Work In Progress 2023 <br />
                 6th Work In Progress 2023
-            </List.Item> 
+            </List.Item>  */}
         </List>
     )
 }

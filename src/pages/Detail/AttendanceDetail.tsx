@@ -1,12 +1,8 @@
-import { useContext, useEffect, useState } from 'react';
-import { NavBar, Tabs, List, SpinLoading } from 'antd-mobile'
-import { CheckOutline, ExclamationCircleOutline } from 'antd-mobile-icons';
-import { useQuery } from 'react-query';
+import { useContext, useState } from 'react';
+import { NavBar, Tabs,} from 'antd-mobile'
 import { useNavigate } from 'react-router-dom';
-import { ServerResponse, IUserManager } from '../../interfaces/ServerResponse';
+import {  IUserManager } from '../../interfaces/ServerResponse';
 import { UserContext } from '../../contexts/UserContext';
-import { getAttendance } from '../../services/Attendance';
-import { IAttendanceResponseInfo } from '../../interfaces/Attendance';
 import { VisionLecturesAttendance } from './Attendance/Vision';
 
 type AttendanceStructure = {
