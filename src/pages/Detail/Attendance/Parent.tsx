@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { List, SpinLoading } from 'antd-mobile'
+import { List, SpinLoading, ErrorBlock } from 'antd-mobile'
 import { CheckOutline, ExclamationCircleOutline } from 'antd-mobile-icons';
 import { useQuery } from 'react-query';
 import { getAttendance } from '../../../services/Attendance';
@@ -8,9 +8,9 @@ import { UserContext } from '../../../contexts/UserContext';
 import { getUserFriendlyDateFormat, isTimeGreaterThan } from '../../../utils/helper';
 import { AttendanceInfo } from '../../../types/attendanceInfo';
 
-export const VisionLecturesAttendance = () => {
+export const Parent = ({event, suffix}: {event: string, suffix: string})  => {
     const { user } = useContext(UserContext) as IUserManager;
-    const {data: attendance, isLoading} = useQuery<ServerResponse>(['vision_attendance'], () => getAttendance(user?.index_number as number, 'VISION'));
+    const {data: attendance, isLoading} = useQuery<ServerResponse>([`${event}`], () => getAttendance(user?.index_number as number, event));
 
     const getAttendanceStatus = (attendance: AttendanceInfo)  => {
         
@@ -37,9 +37,15 @@ export const VisionLecturesAttendance = () => {
     }
 
     return (
-        <List header='Vision Lectures'>
+        <List header={`${event} ${suffix}`}>
             {
                 isLoading ? <List.Item><SpinLoading style={{ '--size': '18px' }} /></List.Item> :
+                attendance?.data?.data.length === 0 ? 
+                <ErrorBlock status='empty' 
+                    title={"No Pillar lectures yet"}
+                    description={""}
+                    image={"https://icons.veryicon.com/png/o/miscellaneous/designer-icon-1/empty-29.png"}
+                /> :
                 attendance?.data?.data.map((attendance: AttendanceInfo) => {
                     return <List.Item arrow={false} 
                     prefix={attendance?.time_in ? 
