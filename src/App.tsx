@@ -1,34 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { QueryClient, QueryClientProvider } from 'react-query'
 import './App.css'
+import UserProvider from './contexts/UserContext'
+import Welcome from './pages/Auth/Welcome'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import ExistingUser from './pages/Auth/ExistingUser'
+import NewUser from './pages/Auth/NewUser';
+import Dashboard from './pages/Home/Dashboard';
+import {Footer} from 'antd-mobile';
+import AttendanceDetails from './pages/Detail/AttendanceDetail';
+import FellowsipServiceDetails from './pages/Detail/FellowshipServiceDetail';
+import BussingDetails from './pages/Detail/BussingDetail';
+import PastoralPointDetail from './pages/Detail/PastoralPoint';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const queryClient = new QueryClient();
+
 
   return (
+    <UserProvider>
+    <QueryClientProvider client={queryClient}>
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Router>
+        <Routes>
+          <Route path='/' element={<Welcome />} />
+          <Route path='/existing-user' element={<ExistingUser />} />
+          <Route path='/new-user' element={<NewUser />} />
+          <Route path='/dashboard' element={<Dashboard />} />
+          <Route path='/attendance' element={<AttendanceDetails />} />
+          <Route path='/fellowship' element={<FellowsipServiceDetails />} />
+          <Route path='/bussing' element={<BussingDetails />} />
+          <Route path='/pastoral_point' element={<PastoralPointDetail />} />
+        </Routes>
+      </Router>
+      {/* <Footer label='(c) Anagkazo Lite 2023' style={{position: 'fixed', bottom: 10}}></Footer> */}
     </div>
+    
+    </QueryClientProvider>
+    </UserProvider>
   )
 }
 
