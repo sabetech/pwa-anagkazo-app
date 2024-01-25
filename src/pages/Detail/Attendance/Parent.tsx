@@ -42,7 +42,7 @@ export const Parent = ({event, suffix}: {event: string, suffix: string})  => {
                 isLoading ? <List.Item><SpinLoading style={{ '--size': '18px' }} /></List.Item> :
                 attendance?.data?.data.length === 0 ? 
                 <ErrorBlock status='empty' 
-                    title={"No Pillar lectures yet"}
+                    title={`No ${event} ${suffix} yet`}
                     description={""}
                     image={"https://icons.veryicon.com/png/o/miscellaneous/designer-icon-1/empty-29.png"}
                 /> :
