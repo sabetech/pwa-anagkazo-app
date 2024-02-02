@@ -15,7 +15,7 @@ export const Parent = ({event, suffix}: {event: string, suffix: string})  => {
     const getAttendanceStatus = (attendance: AttendanceInfo)  => {
         
         if ((attendance.time_in) && (attendance.time_out)) {
-            if (isTimeGreaterThan(attendance.time_in, attendance.late_condition)) {
+            if (attendance.late_condition && isTimeGreaterThan(attendance.time_in, attendance.late_condition)) {
                 return <p style={{ color: 'red' }}>Late</p>
             }else{
                 return (<p style={{ color: 'green' }}>Present</p>)
@@ -23,7 +23,7 @@ export const Parent = ({event, suffix}: {event: string, suffix: string})  => {
         }
         
         if (attendance.time_in) {
-            if (isTimeGreaterThan(attendance.time_in, attendance.late_condition)) 
+            if (attendance.late_condition && isTimeGreaterThan(attendance.time_in, attendance.late_condition)) 
             return <><p style={{ color: 'red' }}>Late <span style={{color: 'grey'}}>(-10 mins)</span> </p></>
             else return <p style={{ color: 'red' }}> Absent </p> 
         }
@@ -46,8 +46,8 @@ export const Parent = ({event, suffix}: {event: string, suffix: string})  => {
                     description={""}
                     image={"https://icons.veryicon.com/png/o/miscellaneous/designer-icon-1/empty-29.png"}
                 /> :
-                attendance?.data?.data.map((attendance: AttendanceInfo) => {
-                    return <List.Item arrow={false} 
+                attendance?.data?.data.map((attendance: AttendanceInfo, idx: number) => {
+                    return <List.Item arrow={false} key={idx}
                     prefix={attendance?.time_in ? 
                     <CheckOutline style={{ color: 'green' }}/> 
                     : 
