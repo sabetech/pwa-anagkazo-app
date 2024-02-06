@@ -29,9 +29,9 @@ export const Parent = ({event, suffix}: {event: string, suffix: string})  => {
         }
 
         if (attendance.time_out) {
-            return (<p style={{ color: 'red' }}>
-                Late 
-                    </p>)
+            if (event != 'VISION')
+            return (<p style={{ color: 'red' }}>Late </p>)
+            else (<p style={{ color: 'red' }}>Absent </p>)
         }
         return <p style={{ color: 'red' }}>Absent</p>
     }
