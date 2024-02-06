@@ -8,6 +8,9 @@ import { Anagkazo_LiveAttendance } from './Attendance/children/Anagkazo_live';
 import { The4AMPrayerAttendance } from './Attendance/children/4AMPrayer'
 import { AnagkazoEncounterAttendance } from './Attendance/children/AnagkazoEncounter';
 import { SundayServiceAttendance } from './Attendance/children/SundayService';
+import { WaitingOnGodAttendance } from './Attendance/children/WaitingOnGod';
+import { TutorialAttendance } from './Attendance/children/Tutorials';
+import { SpecialServiceAttendance } from './Attendance/children/SpecialServices';
 
 const AttendanceDetails = () => {
     const navigate = useNavigate()
@@ -39,6 +42,15 @@ const AttendanceDetails = () => {
                 </Tabs.Tab>
                 <Tabs.Tab title='Sunday Service' key='8'>
                     <SundayServiceAttendance />
+                </Tabs.Tab>
+                <Tabs.Tab title='Waiting On God' key='9'>
+                    <WaitingOnGodAttendance />
+                </Tabs.Tab>
+                <Tabs.Tab title='Tutorials' key='10'>
+                    <TutorialAttendance />
+                </Tabs.Tab>
+                <Tabs.Tab title='Special Services' key='11'>
+                    <SpecialServiceAttendance />
                 </Tabs.Tab>
             </Tabs>
         </>
