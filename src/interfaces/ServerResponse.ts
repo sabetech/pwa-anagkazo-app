@@ -19,6 +19,7 @@ export interface User {
     email_address?: string;
     date_of_birth?: string;
     already_exists?: boolean;
+    passcode?: number; //this is illegal. Rewrite the whole auth system
 }
 
 export interface IUserManager {

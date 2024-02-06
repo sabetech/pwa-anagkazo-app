@@ -1,5 +1,5 @@
 import { useState, useRef, useContext } from 'react';
-import { Space, Image, Form, Input, SafeArea, Button, Popover, Toast } from "antd-mobile";
+import { Space, Image, Form, Input, SafeArea, Button, Toast } from "antd-mobile";
 import anagkazo_logo from "../../assets/anagkazo_logo_trans.png";
 import { useMutation } from 'react-query';
 import { verifyStudent } from '../../services/UserManagement';
@@ -22,6 +22,8 @@ const Welcome: React.FC = () => {
         mutationFn: async (indexNumber: number) => { 
             const response = await verifyStudent(indexNumber);
             if (response.status === ResponseCodes.OK) {
+                
+                console.log(response.data.user);
                 
                 storeUser(response.data.user as User)
                 localStorage.setItem(StorageKeys.USER, JSON.stringify(response.data.user))
