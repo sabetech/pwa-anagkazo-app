@@ -10,7 +10,7 @@ export const postAttendance = async (indexnumber: number = 701274, attendanceInf
 }
 
 export const getAttendance = async (user: User, event: string): Promise<AxiosResponse> => {
-
+    
     //read from local storage if you don't get it go to the server
     const attendanceData = getAttendanceInfo(`${user.id}-${event}-${StorageKeys.ATTENDANCE}`);
     if (attendanceData.length > 0) {
