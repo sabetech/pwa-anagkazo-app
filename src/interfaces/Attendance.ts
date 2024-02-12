@@ -1,7 +1,10 @@
 export interface IAttendanceRequestInfo {
     date: string;
     event: string;
-    service_type: 'academic';
+    mode: string;
+    late_condition: string;
+    time: string;
+    _synced: boolean;
 }
 
 export type IAttendanceResponseInfo = {
@@ -9,4 +12,8 @@ export type IAttendanceResponseInfo = {
     date: string;
     time: string;
     student_id: number;
+}
+
+export type AttendanceData = {
+    attendanceData: IAttendanceResponseInfo[];
 }

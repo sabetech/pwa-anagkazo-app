@@ -1,15 +1,17 @@
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../contexts/UserContext';
 import { IPastoralPoint, IUserManager } from '../../interfaces/ServerResponse';
-import { Grid, Space, FloatingBubble, Modal, Image,Button, ActionSheet, Dialog  } from 'antd-mobile'
-import { ScanningOutline, MoreOutline } from 'antd-mobile-icons'
-import {QrScanner} from '@yudiel/react-qr-scanner';
+import { Grid, Space, FloatingBubble, Modal, Image, ActionSheet, Dialog, Toast  } from 'antd-mobile'
+import { ScanningOutline, MoreOutline, UploadOutline } from 'antd-mobile-icons'
+import { QrScanner } from '@yudiel/react-qr-scanner';
 import { ValueCard } from '../../components/dashboard/ValueCard';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation } from 'react-query';
-import { getPastoralPoint, getBussing } from '../../services/StudentData';
-import { ServerResponse, IBussing } from '../../interfaces/ServerResponse';
+import { getPastoralPoint } from '../../services/StudentData';
+import { ServerResponse } from '../../interfaces/ServerResponse';
 import { postAttendance } from '../../services/Attendance';
+import { saveAttendanceInfo, updateSyncedAttendanceInfo } from '../../utils/storage';
+import * as StorageKeys from '../../constants/StorageKeys';
 import type {
     Action
 } from 'antd-mobile/es/components/action-sheet';
@@ -23,19 +25,22 @@ const Dashboard = () => {
     const [visible, setVisible] = useState(false)
     const { user, storeUser } = useContext(UserContext) as IUserManager;
     const {data: pastoralPoints, isLoading} = useQuery<ServerResponse>(['pastoral_points'], () => getPastoralPoint(user?.index_number as number));
-    const { data: bussingData, isLoading: bussingLoading } = useQuery<ServerResponse>(['bussing'], () => getBussing(user?.index_number as number));
-    const [averageBussing, setAverageBussing] = useState<number>(0);
+    // const { data: bussingData, isLoading: bussingLoading } = useQuery<ServerResponse>(['bussing'], () => getBussing(user?.index_number as number));
+    // const [averageBussing, setAverageBussing] = useState<number>(0);
 
     const { mutate, isLoading: scanning } = useMutation({
         mutationFn: async (values: IAttendanceRequestInfo) => {
             return await postAttendance(user?.id as number, values)
         },
         retry: 3,
-        onSuccess: () => {
-
+        onSuccess: ( _, values: IAttendanceRequestInfo ) => {
+            updateSyncedAttendanceInfo(`${user?.id}-${values.event}-${StorageKeys.ATTENDANCE}`, values);
         },
         onError: (error) => {
-            console.log(error)
+            Toast.show({
+                content: 'Your attendance is not yet synced. It will be synced soon!',
+                icon: <UploadOutline />,
+              })
         }
     });
 
@@ -54,6 +59,7 @@ const Dashboard = () => {
 
     },[pastoralPoints])
 
+    /*
     useEffect(() => {
 
         if (bussingData?.data) {
@@ -67,7 +73,7 @@ const Dashboard = () => {
             setAverageBussing(myAverageBussing.toFixed(0) as unknown as number);
         }
 
-    }, [bussingData])
+    }, [bussingData]) */
     
     const actions: Action[] = [
         {
@@ -80,7 +86,7 @@ const Dashboard = () => {
                     cancelText: 'No',
                     showCloseButton: true,
                     onConfirm: () => {
-                        localStorage.removeItem('user');
+                        localStorage.removeItem(StorageKeys.USER);
                         storeUser(null as any);
                         navigate('/');
                     },
@@ -97,7 +103,22 @@ const Dashboard = () => {
         if (requestCount > 0) return;
         requestCount++;
         let attnInfo = JSON.parse(decoded) as IAttendanceRequestInfo
+        let saveStatus = saveAttendanceInfo(`${user?.id}-${attnInfo.event}-${StorageKeys.ATTENDANCE}`, attnInfo)
+        
+        if (!saveStatus) {
+            Modal.alert({
+                title: attnInfo.event,
+                content: 'Attendance has already been marked for this event',
+                confirmText: 'OK!',
+                onConfirm: () => {
+                    requestCount = 0;
+                }
+            })
+            return;
+        }
+
         mutate(attnInfo)
+        
         Modal.clear();
 
         Dialog.alert({
@@ -107,7 +128,6 @@ const Dashboard = () => {
             onConfirm: () => {
                 requestCount = 0;
             }
-        
         })
 
     }
@@ -130,7 +150,6 @@ const Dashboard = () => {
                 navigate("/pastoral_point")
             break;
         }
-        
     }
 
     return (

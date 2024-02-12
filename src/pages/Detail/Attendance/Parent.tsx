@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { List, SpinLoading, ErrorBlock } from 'antd-mobile'
+import { List, SpinLoading, ErrorBlock, Toast } from 'antd-mobile'
 import { CheckOutline, ExclamationCircleOutline } from 'antd-mobile-icons';
 import { useQuery } from 'react-query';
 import { getAttendance } from '../../../services/Attendance';
@@ -10,7 +10,22 @@ import { AttendanceInfo } from '../../../types/attendanceInfo';
 
 export const Parent = ({event, suffix}: {event: string, suffix: string})  => {
     const { user } = useContext(UserContext) as IUserManager;
-    const {data: attendance, isLoading} = useQuery<ServerResponse>([`${event}`], () => getAttendance(user?.index_number as number, event));
+    if (!user) {
+        return null
+    }
+    const {data: attendance, isLoading} = useQuery<ServerResponse>({
+        queryKey: [`${event}`], 
+        queryFn: () => getAttendance(user, event),
+        retry: 3,
+        onError: (error) => {
+            // Toast.show({
+            //     content: 'An error occurred while fetching attendance. Please try again!',
+            //     icon: <ExclamationCircleOutline />,
+            //   });
+        }
+    });
+
+    console.log("DATA", attendance);
 
     const getAttendanceStatus = (attendance: AttendanceInfo)  => {
         

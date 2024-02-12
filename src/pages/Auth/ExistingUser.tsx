@@ -61,7 +61,7 @@ const ExistingUser = () => {
             <Form
                 layout='horizontal'
                 footer={
-                <Button loading={isLoading} loadingText='Signing In' block type='submit' color='primary' size='large' onClick={onLogin}>
+                <Button loading={isLoading} loadingText='Signing In' block type='submit' color='primary' size='large' onClick={onLogin} disabled={passcode.length < 4}>
                     Login
                 </Button>
                 }
@@ -75,9 +75,11 @@ const ExistingUser = () => {
                 </Form.Item>
                 
             </Form>
-            <div style={{ display:"flex", justifyContent: 'center' }}>
-                <a href={"/"}>Sign in with a different account</a>    
+            <div style={{ display:"flex", justifyContent: 'space-between', flexDirection: 'column', alignItems: 'center' }}>
+                <a href={"/"} style={{ marginBottom: '20%' }}>Sign in with a different account</a>    
+                <a href={"/forgotten_passcode"}>Forgotten Passcode?</a>   
             </div>
+           
         </AutoCenter>
     </>);
 }

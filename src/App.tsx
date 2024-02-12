@@ -6,7 +6,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import ExistingUser from './pages/Auth/ExistingUser'
 import NewUser from './pages/Auth/NewUser';
 import Dashboard from './pages/Home/Dashboard';
-import {Footer} from 'antd-mobile';
+// import {Footer} from 'antd-mobile';
+// import { CompassOutline, CloseCircleOutline } from 'antd-mobile-icons'
+// import { NoticeBar } from 'antd-mobile'
 import AttendanceDetails from './pages/Detail/AttendanceDetail';
 import FellowsipServiceDetails from './pages/Detail/FellowshipServiceDetail';
 import BussingDetails from './pages/Detail/BussingDetail';
@@ -32,6 +34,11 @@ function App() {
           <Route path='/pastoral_point' element={<PastoralPointDetail />} />
         </Routes>
       </Router>
+      {/* <NoticeBar 
+        content='The Server is currently unavailable' color='alert'
+        icon={<CompassOutline />}
+        closeable
+       /> */}
       {/* <Footer label='(c) Anagkazo Lite 2023' style={{position: 'fixed', bottom: 10}}></Footer> */}
     </div>
     
