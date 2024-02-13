@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useState, useContext } from 'react';
 import { List, SpinLoading, ErrorBlock, Toast } from 'antd-mobile'
 import { CheckOutline, ExclamationCircleOutline } from 'antd-mobile-icons';
 import { useQuery } from 'react-query';
@@ -7,25 +7,34 @@ import { ServerResponse, IUserManager } from '../../../interfaces/ServerResponse
 import { UserContext } from '../../../contexts/UserContext';
 import { getUserFriendlyDateFormat, isTimeGreaterThan } from '../../../utils/helper';
 import { AttendanceInfo } from '../../../types/attendanceInfo';
+import { getAttendanceInfo, cacheAttendanceInfo } from '../../../utils/storage';
+import * as StorageKeys from '../../../constants/StorageKeys';
 
 export const Parent = ({event, suffix}: {event: string, suffix: string})  => {
     const { user } = useContext(UserContext) as IUserManager;
+    const [attendanceData, setAttendanceData] = useState<AttendanceInfo[]>([]);
+
     if (!user) {
         return null
     }
     const {data: attendance, isLoading} = useQuery<ServerResponse>({
         queryKey: [`${event}`], 
         queryFn: () => getAttendance(user, event),
-        retry: 3,
+        retry: 1,
+        onSuccess: (data) => {
+            setAttendanceData(data.data)
+            console.log("DATA -- :::", data);
+            cacheAttendanceInfo(`${user.id}-${event}-${StorageKeys.ATTENDANCE}`, attendance?.data.data)
+        },
         onError: (error) => {
-            // Toast.show({
-            //     content: 'An error occurred while fetching attendance. Please try again!',
-            //     icon: <ExclamationCircleOutline />,
-            //   });
-        }
+            const attendanceData = getAttendanceInfo(`${user.id}-${event}-${StorageKeys.ATTENDANCE}`);            
+            if (attendanceData.length > 0) {
+                setAttendanceData(attendanceData)
+            }
+        },
     });
 
-    console.log("DATA", attendance);
+    console.log("EVENT", event, "ATTENDANCE", attendance);
 
     const getAttendanceStatus = (attendance: AttendanceInfo)  => {
         
@@ -55,13 +64,13 @@ export const Parent = ({event, suffix}: {event: string, suffix: string})  => {
         <List header={`${event} ${suffix}`}>
             {
                 isLoading ? <List.Item><SpinLoading style={{ '--size': '18px' }} /></List.Item> :
-                attendance?.data?.data.length === 0 ? 
+                attendanceData?.length === 0 ? 
                 <ErrorBlock status='empty' 
                     title={`No ${event} ${suffix} yet`}
                     description={""}
                     image={"https://icons.veryicon.com/png/o/miscellaneous/designer-icon-1/empty-29.png"}
                 /> :
-                attendance?.data?.data.map((attendance: AttendanceInfo, idx: number) => {
+                attendanceData?.map((attendance: AttendanceInfo, idx: number) => {
                     return <List.Item arrow={false} key={idx}
                     prefix={attendance?.time_in ? 
                     <CheckOutline style={{ color: 'green' }}/> 

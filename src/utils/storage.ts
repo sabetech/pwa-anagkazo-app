@@ -7,7 +7,9 @@ export function  saveAttendanceInfo(key: string, attendanceInfo: IAttendanceRequ
     if (_isAttendanceInfoExist(key, attendanceInfo)) {
         return false;
     }
-
+    
+    attendanceInfo._synced = false;
+    
     if (attendanceInfo.date === 'Null') {
         attendanceInfo.date = new Date().toISOString().split('T')[0];
         attendanceInfo.time = new Date().toISOString().split('T')[1].split('.')[0];
@@ -37,23 +39,16 @@ export function updateSyncedAttendanceInfo(key: string, attendanceInfo: IAttenda
     localStorage.setItem(key, JSON.stringify(attendanceData));
 }
 
+export function cacheAttendanceInfo(key: string, attnInfo: AttendanceInfo[]): boolean {
+    
+    // localStorage.setItem(key, JSON.stringify(attnInfo))
+
+    return true;
+}
+
 export function getAttendanceInfo(key: string): AttendanceInfo[] {
-    console.log("CURRENT KEY::" + key)
     const currentAttnData = localStorage.getItem(key) ? JSON.parse(localStorage.getItem(key) as string) as IAttendanceRequestInfo[] : [] as IAttendanceRequestInfo[];
 
-    /*
-    {
-            "id": 234,
-            "student_id": 2625,
-            "date": "2024-02-09",
-            "time_in": "07:46:26",
-            "time_out": null,
-            "late_condition": "08:15:00",
-            "event": "VISION",
-            "created_at": "2024-02-09T07:46:26.000000Z",
-            "updated_at": "2024-02-09T07:46:26.000000Z"
-        },
-    */
    const displayableAttnInfo : AttendanceInfo[] = [];
     currentAttnData.forEach((attnInfo) => {
         if (attnInfo.mode == 'IN') {
