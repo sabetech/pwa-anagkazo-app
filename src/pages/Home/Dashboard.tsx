@@ -13,6 +13,7 @@ import { postAttendance } from '../../services/Attendance';
 import type {
     Action
 } from 'antd-mobile/es/components/action-sheet';
+import * as StorageKeys from "../../constants/StorageKeys"
 import { IAttendanceRequestInfo } from '../../interfaces/Attendance';
 
 const Dashboard = () => {
@@ -80,7 +81,7 @@ const Dashboard = () => {
                     cancelText: 'No',
                     showCloseButton: true,
                     onConfirm: () => {
-                        localStorage.removeItem('user');
+                        localStorage.removeItem(StorageKeys.USER);
                         storeUser(null as any);
                         navigate('/');
                     },
