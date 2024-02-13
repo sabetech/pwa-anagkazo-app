@@ -1,4 +1,4 @@
-import { useState, useRef, useContext } from 'react';
+import { useState, useRef, useContext, useEffect } from 'react';
 import { Space, Image, Form, Input, SafeArea, Button, Toast } from "antd-mobile";
 import anagkazo_logo from "../../assets/anagkazo_logo_trans.png";
 import { useMutation } from 'react-query';
@@ -17,6 +17,16 @@ const Welcome: React.FC = () => {
     const { storeUser } = useContext(UserContext) as IUserManager;
     const navigate = useNavigate();
 
+    useEffect(() => {
+
+        //log the user in if they are already logged in
+        if (localStorage.getItem(StorageKeys.USER)) {
+            const user = JSON.parse(localStorage.getItem(StorageKeys.USER) as string) as User;
+            storeUser(user);
+            navigate('/dashboard')
+        }
+
+    },[]);
 
     const { mutate, isLoading } = useMutation({
         mutationFn: async (indexNumber: number) => { 
