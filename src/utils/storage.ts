@@ -1,6 +1,5 @@
-import { AttendanceData, IAttendanceRequestInfo } from '../interfaces/Attendance';
+import { IAttendanceRequestInfo } from '../interfaces/Attendance';
 import * as StorageKeys from '../constants/StorageKeys';
-import AttendanceDetails from '../pages/Detail/AttendanceDetail';
 import { AttendanceInfo } from '../types/attendanceInfo';
 
 export function  saveAttendanceInfo(key: string, attendanceInfo: IAttendanceRequestInfo): boolean{

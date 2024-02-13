@@ -37,10 +37,10 @@ const Dashboard = () => {
             updateSyncedAttendanceInfo(`${user?.id}-${values.event}-${StorageKeys.ATTENDANCE}`, values);
         },
         onError: (error) => {
-            Toast.show({
-                content: 'Your attendance is not yet synced. It will be synced soon!',
-                icon: <UploadOutline />,
-              })
+            // Toast.show({
+            //     content: 'Your attendance is not yet synced. It will be synced soon!',
+            //     icon: <UploadOutline />,
+            //   })
         }
     });
 
