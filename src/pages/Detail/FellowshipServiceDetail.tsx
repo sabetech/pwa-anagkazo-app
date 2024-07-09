@@ -13,7 +13,7 @@ const FellowshipServiceDetails = () => {
     return (
         <>
            <NavBar onBack={() => navigate("/dashboard")} style={{'--height': '60px', backgroundColor: '#b12340', color:'white'}} > Fellowship Service Detail </NavBar>
-           
+            {/* Use virtual list in the future */}
             <List header='Attendance Average: 12 | Offering Average: 54.12'>
                 <List.Item arrow={false} prefix={<CheckOutline style={{ color: 'green' }}/>} description='Offering: 22.00' extra={'Attendance: 11'} onClick={() => {}} >
                     6th July 2023
@@ -25,12 +25,12 @@ const FellowshipServiceDetails = () => {
                     4th July 2023
                 </List.Item>
             </List>
-            <Footer content={
-                <Button block shape='rectangular' color='primary' size='large' onClick={handleFillServiceForm}>
-                    Fill Service Form!
-                </Button>
-            }>
-            </Footer>
+            
+            <Button block shape='rectangular' color='primary' size='large' onClick={handleFillServiceForm}>
+                Fill Service Form!
+            </Button>
+            
+            
         </>
     )
 }
