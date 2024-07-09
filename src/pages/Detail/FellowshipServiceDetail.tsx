@@ -14,15 +14,9 @@ const FellowshipServiceDetails = () => {
         <>
            <NavBar onBack={() => navigate("/dashboard")} style={{'--height': '60px', backgroundColor: '#b12340', color:'white'}} > Fellowship Service Detail </NavBar>
             {/* Use virtual list in the future */}
-            <List header='Attendance Average: 12 | Offering Average: 54.12'>
-                <List.Item arrow={false} prefix={<CheckOutline style={{ color: 'green' }}/>} description='Offering: 22.00' extra={'Attendance: 11'} onClick={() => {}} >
-                    6th July 2023
-                </List.Item>
-                <List.Item arrow={false} prefix={<CheckOutline style={{ color: 'green' }}/>} description='Offering: 22.00' extra={'Attendance: 11'} onClick={() => {}} >
-                    5th July 2023
-                </List.Item>
-                <List.Item arrow={false} prefix={<CheckOutline style={{ color: 'green' }}/>} description='Offering: 22.00' extra={'Attendance: 11'} onClick={() => {}} >
-                    4th July 2023
+            <List header='Attendance Average: 0 | Offering Average: 0'>
+                <List.Item arrow={false} prefix={<CheckOutline style={{ color: 'green' }}/>} description='Offering: 0.00' extra={'Attendance: 0'} onClick={() => {}} >
+                    July 9, 2024
                 </List.Item>
             </List>
             
