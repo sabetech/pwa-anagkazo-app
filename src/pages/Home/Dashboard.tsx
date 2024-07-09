@@ -1,8 +1,9 @@
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../contexts/UserContext';
 import { IPastoralPoint, IUserManager } from '../../interfaces/ServerResponse';
-import { Grid, Space, FloatingBubble, Modal, Image,Button, ActionSheet, Dialog  } from 'antd-mobile'
-import { ScanningOutline, MoreOutline } from 'antd-mobile-icons'
+import { Grid, Space, FloatingBubble, Modal, Image, ActionSheet, Dialog  } from 'antd-mobile'
+
+import { SystemQRcodeOutline, ScanningOutline, MoreOutline, TeamOutline } from 'antd-mobile-icons'
 import {QrScanner} from '@yudiel/react-qr-scanner';
 import { ValueCard } from '../../components/dashboard/ValueCard';
 import { useNavigate } from 'react-router-dom';
@@ -173,12 +174,12 @@ const Dashboard = () => {
             </div>
             <Grid columns={2} gap={2}>
                 <Grid.Item >
-                    <ValueCard key={"event_attendance"} title="Attendance" value={15} handleClick={() => handleClick("attendance")  } />
+                    <ValueCard key={"event_attendance"} title="Attendance" value={15} handleClick={() => handleClick("attendance")  } Icon={<SystemQRcodeOutline />}/>
                 </Grid.Item>
-                {/* <Grid.Item>
-                    <ValueCard key={"bussingAttnAvg"} title="Fellowship" value={12} handleClick={() => handleClick("fellowship")} />
+                 <Grid.Item>
+                    <ValueCard key={"fellowship"} title="Fellowship" value={12} handleClick={() => handleClick("fellowship")} Icon={<TeamOutline />}/>
                 </Grid.Item>
-                <Grid.Item >
+                {/*<Grid.Item >
                     <ValueCard key={"fellowshipOfferingAvg"} title="Bussing" value={ averageBussing } handleClick={() => handleClick("bacenta")} />
                 </Grid.Item>
                 <Grid.Item>

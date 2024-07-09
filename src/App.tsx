@@ -11,6 +11,7 @@ import AttendanceDetails from './pages/Detail/AttendanceDetail';
 import FellowsipServiceDetails from './pages/Detail/FellowshipServiceDetail';
 import BussingDetails from './pages/Detail/BussingDetail';
 import PastoralPointDetail from './pages/Detail/PastoralPoint';
+import FellowshipServiceForm from './pages/Forms/FellowshipService'
 
 function App() {
   const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ function App() {
           <Route path='/dashboard' element={<Dashboard />} />
           <Route path='/attendance' element={<AttendanceDetails />} />
           <Route path='/fellowship' element={<FellowsipServiceDetails />} />
+          <Route path='/fellowship-service-form' element={<FellowshipServiceForm />} />
           <Route path='/bussing' element={<BussingDetails />} />
           <Route path='/pastoral_point' element={<PastoralPointDetail />} />
         </Routes>

@@ -13,6 +13,7 @@
     "antd-mobile": "^5.31.1",
     "antd-mobile-icons": "^0.3.0",
     "axios": "^1.4.0",
+    "dayjs": "^1.11.11",
     "react": "^18.2.0",
     "react-auth-kit": "^2.12.3",
     "react-dom": "^18.2.0",

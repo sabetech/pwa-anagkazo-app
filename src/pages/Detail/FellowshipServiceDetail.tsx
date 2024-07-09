@@ -1,4 +1,4 @@
-import { NavBar, Tabs, List, SpinLoading } from 'antd-mobile'
+import { NavBar, Tabs, List, Footer, Button } from 'antd-mobile'
 import { CheckOutline, ExclamationCircleOutline } from 'antd-mobile-icons';
 import { useNavigate } from 'react-router-dom';
 
@@ -6,6 +6,9 @@ import { useNavigate } from 'react-router-dom';
 const FellowshipServiceDetails = () => {
     const navigate = useNavigate()
 
+    const handleFillServiceForm = () => {
+        navigate('/fellowship-service-form');
+    }
 
     return (
         <>
@@ -22,6 +25,12 @@ const FellowshipServiceDetails = () => {
                     4th July 2023
                 </List.Item>
             </List>
+            <Footer content={
+                <Button block shape='rectangular' color='primary' size='large' onClick={handleFillServiceForm}>
+                    Fill Service Form!
+                </Button>
+            }>
+            </Footer>
         </>
     )
 }

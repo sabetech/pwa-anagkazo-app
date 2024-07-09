@@ -4,10 +4,11 @@ import { EventHandler } from "react";
 type ValueCardProps = {
     title: string,
     value: number,
-    handleClick: EventHandler<any>
+    handleClick: EventHandler<any>,
+    Icon: any
 }
 
-export const ValueCard: React.FC<ValueCardProps> = ({title, value, handleClick }) => <div style={{
+export const ValueCard: React.FC<ValueCardProps> = ({title, value, handleClick, Icon }) => <div style={{
     backgroundColor: 'white',
     width: '20vh',
     height: '20vh',
@@ -27,7 +28,7 @@ export const ValueCard: React.FC<ValueCardProps> = ({title, value, handleClick }
         fontWeight: 700,
         margin: -10,
     }}>
-        <SystemQRcodeOutline />
+        { Icon }
     </p>
     <div style={{
         textAlign: 'center',
