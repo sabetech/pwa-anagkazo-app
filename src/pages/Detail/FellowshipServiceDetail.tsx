@@ -1,13 +1,51 @@
-import { NavBar, Tabs, List, Footer, Button } from 'antd-mobile'
-import { CheckOutline, ExclamationCircleOutline } from 'antd-mobile-icons';
+import { NavBar, List, Space, Button, Modal, Form, TextArea } from 'antd-mobile'
+import { CheckOutline } from 'antd-mobile-icons';
 import { useNavigate } from 'react-router-dom';
 
 
 const FellowshipServiceDetails = () => {
     const navigate = useNavigate()
+    const [fellowshipCancelForm] = Form.useForm();
 
     const handleFillServiceForm = () => {
         navigate('/fellowship-service-form');
+    }
+
+    const onFellowshipServiceCancel = () => {
+        console.log(
+            fellowshipCancelForm.getFieldValue("reason")
+        )
+    }
+
+    const handleCancelServiceClick = () => {
+        Modal.show({
+            title: 'Cancel Service Reason',
+            closeOnAction: true,
+            actions: [{
+                key: 'ok',
+                text: 'Ok',
+                primary: true
+            }, {
+                key: 'ignore',
+                text: 'Ignore',
+                primary: false
+            }],
+            onAction: () => {
+                console.log("CANCELLING...")
+                onFellowshipServiceCancel()
+            },
+            content: <>
+                <Form layout='vertical' 
+                      form={fellowshipCancelForm}
+                >
+                    <Form.Item label='Reason' name='reason'>
+                        <TextArea
+                            placeholder='Type your Reason here'
+                        />
+                    </Form.Item>
+                </Form>
+            </>
+        })
     }
 
     return (
@@ -19,10 +57,14 @@ const FellowshipServiceDetails = () => {
                     July 9, 2024
                 </List.Item>
             </List>
-            
-            <Button block shape='rectangular' color='primary' size='large' onClick={handleFillServiceForm}>
-                Fill Service Form!
-            </Button>
+            <Space direction='horizontal' justify='center' align='center' block>
+                <Button block shape='rectangular' color='primary' size='large' onClick={handleFillServiceForm}>
+                    Fill Service Form!
+                </Button>
+                <Button block shape='rectangular' fill='outline' size='large' onClick={handleCancelServiceClick}>
+                    Cancel Service
+                </Button>
+            </Space>
             
             
         </>
