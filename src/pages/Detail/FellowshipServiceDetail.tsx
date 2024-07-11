@@ -1,15 +1,38 @@
-import { NavBar, List, Space, Button, Modal, Form, TextArea } from 'antd-mobile'
+import { useState, useContext } from 'react';
+import { NavBar, List, Space, Button, Modal, Form, TextArea,SpinLoading } from 'antd-mobile'
 import { CheckOutline } from 'antd-mobile-icons';
+import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../../contexts/UserContext';
+import { IUserManager, ServerResponse, ResponseError } from '../../interfaces/ServerResponse';
+import { TFellowshipService } from '../../types/fellowshipFormFields'
+import { getFellowshipServices } from '../../services/FellowshipService';
+import { getUserFriendlyDateFormat } from '../../utils/helper'
+
 
 
 const FellowshipServiceDetails = () => {
     const navigate = useNavigate()
+    const { user } = useContext(UserContext) as IUserManager;
     const [fellowshipCancelForm] = Form.useForm();
+
+    const {data: fellowshipServices, isLoading, isSuccess} = useQuery<ServerResponse>(
+        {
+            queryKey: ['fellowship_services'],
+            queryFn: () => getFellowshipServices(user?.id as number)
+        },
+    ) 
+
+    if (isSuccess) {
+        console.log("yeah")
+        // setFellowshipServicesState(fellowshipServices.data)
+    }
 
     const handleFillServiceForm = () => {
         navigate('/fellowship-service-form');
     }
+
+    console.log("Fellowship services", fellowshipServices);
 
     const onFellowshipServiceCancel = () => {
         console.log(
@@ -54,10 +77,21 @@ const FellowshipServiceDetails = () => {
         <>
            <NavBar onBack={() => navigate("/dashboard")} style={{'--height': '60px', backgroundColor: '#b12340', color:'white'}} > Fellowship Service Detail </NavBar>
             {/* Use virtual list in the future */}
+            {
+                isLoading && <SpinLoading />
+            }
             <List header='Attendance Average: 0 | Offering Average: 0'>
-                <List.Item arrow={false} prefix={<CheckOutline style={{ color: 'green' }}/>} description='Offering: 0.00' extra={'Attendance: 0'} onClick={() => {}} >
-                    July 9, 2024
-                </List.Item>
+                
+                {
+                    isSuccess &&
+                    fellowshipServices.data.map( (fellowshipService: TFellowshipService) => (
+                        <List.Item key={fellowshipService.id}  arrow={false} prefix={<CheckOutline style={{ color: 'green' }}/>} description={`Offering: ${fellowshipService.offering}`} extra={`Attendance: ${ fellowshipService.attendance }`} onClick={() => {}} >
+                            { getUserFriendlyDateFormat(fellowshipService.service_date) }
+                        </List.Item>
+                    )
+                )
+                }
+                
             </List>
             <Space direction='horizontal' justify='center' align='center' block>
                 <Button block shape='rectangular' color='primary' size='large' onClick={handleFillServiceForm}>

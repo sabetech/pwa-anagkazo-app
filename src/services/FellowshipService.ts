@@ -9,3 +9,7 @@ export const postFellowshipService = async (studentID: number, fellowshipService
 
     return (await api.postWithFile('/fellowship_service/'+studentID, fellowshipServiceForm, {}));
 }
+
+export const getFellowshipServices = async (studentId: number): Promise<AxiosResponse> => {
+    return (await api.get(`/fellowship_service/${studentId}`, {})).data;
+}

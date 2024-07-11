@@ -1,5 +1,5 @@
 import { useState, RefObject, useContext } from 'react';
-import { NavBar, Form, Button, DatePicker, Stepper, ImageUploader, Input, Dialog } from 'antd-mobile'
+import { NavBar, Form, Button, DatePicker, Stepper, ImageUploader, Input, Dialog, Toast } from 'antd-mobile'
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import type { DatePickerRef } from 'antd-mobile/es/components/date-picker'
@@ -24,7 +24,13 @@ const FellowshipServiceForm = () => {
             return await postFellowshipService(user?.id as number, fellowshipServiceFields)
         },
         onSuccess: (data) => {
-            console.log("data::", data)
+            Toast.show({
+                content: 'Login Successful',
+                duration: 1000,
+                icon: 'success',
+                position: 'top'
+            })
+            navigate("/fellowship");
         },
         onError: (error: ResponseError) => {
             console.log(error)
@@ -64,7 +70,7 @@ const FellowshipServiceForm = () => {
                 form={fellowshipservice}
                 layout='horizontal'
                 footer={
-                    <Button block type='submit' color='primary' size='large'>
+                    <Button block type='submit' color='primary' size='large' loading={isLoading}>
                         Submit
                     </Button>
                 }

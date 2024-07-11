@@ -5,3 +5,12 @@ export type FellowshipServiceFormFields = {
     offering: number;
     service_date: string
 }
+
+export type TFellowshipService = {
+    id: number;
+    attendance: number;
+    offering: number;
+    service_date: string;
+    foreign_offering: number;
+    image_url: string;
+}

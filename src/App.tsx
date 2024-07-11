@@ -14,7 +14,14 @@ import PastoralPointDetail from './pages/Detail/PastoralPoint';
 import FellowshipServiceForm from './pages/Forms/FellowshipService'
 
 function App() {
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        //other query settings
+        refetchOnWindowFocus: false,
+      },
+    },
+  });
 
 
   return (
