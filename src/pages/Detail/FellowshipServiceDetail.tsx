@@ -1,13 +1,14 @@
 import { useState, useContext } from 'react';
 import { NavBar, List, Space, Button, Modal, Form, TextArea,SpinLoading, Image } from 'antd-mobile'
-import { CheckOutline } from 'antd-mobile-icons';
-import { useQuery } from 'react-query';
+import { StopOutline } from 'antd-mobile-icons';
+import { useMutation, useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../contexts/UserContext';
-import { IUserManager, ServerResponse, ResponseError } from '../../interfaces/ServerResponse';
-import { TFellowshipService } from '../../types/fellowshipFormFields'
-import { getFellowshipServices } from '../../services/FellowshipService';
+import { IUserManager, ServerResponse } from '../../interfaces/ServerResponse';
+import { TFellowshipService, TCancelFellowshipService } from '../../types/fellowshipFormFields'
+import { getFellowshipServices, cancelFellowshipService } from '../../services/FellowshipService';
 import { getUserFriendlyDateFormat } from '../../utils/helper'
+import dayjs from 'dayjs';
 
 
 
@@ -16,17 +17,18 @@ const FellowshipServiceDetails = () => {
     const { user } = useContext(UserContext) as IUserManager;
     const [fellowshipCancelForm] = Form.useForm();
 
-    const {data: fellowshipServices, isLoading, isSuccess} = useQuery<ServerResponse>(
+    const {data: fellowshipServices, isFetching, isSuccess} = useQuery<ServerResponse>(
         {
             queryKey: ['fellowship_services'],
             queryFn: () => getFellowshipServices(user?.id as number)
         },
-    ) 
+    );
 
-    if (isSuccess) {
-        console.log("yeah")
-        // setFellowshipServicesState(fellowshipServices.data)
-    }
+    const { mutate: cancelService } = useMutation({
+        mutationFn: async (cancelFellowshipInfo: TCancelFellowshipService) => {
+            return await cancelFellowshipService(user?.id as number, cancelFellowshipInfo.reason, cancelFellowshipInfo.service_date)
+        },
+    });
 
     const handleFillServiceForm = () => {
         navigate('/fellowship-service-form');
@@ -38,6 +40,12 @@ const FellowshipServiceDetails = () => {
         console.log(
             fellowshipCancelForm.getFieldValue("reason")
         )
+
+        cancelService({
+            reason: fellowshipCancelForm.getFieldValue("reason"),
+            service_date: dayjs().format("YYYY-MM-DD"),
+        })
+
         fellowshipCancelForm.resetFields();
     }
 
@@ -78,27 +86,38 @@ const FellowshipServiceDetails = () => {
            <NavBar onBack={() => navigate("/dashboard")} style={{'--height': '60px', backgroundColor: '#b12340', color:'white'}} > Fellowship Service Detail </NavBar>
             {/* Use virtual list in the future */}
             {
-                isLoading && <SpinLoading />
+                isFetching && <SpinLoading />
             }
             <List header='Attendance Average: 0 | Offering Average: 0'>
-                
                 {
                     isSuccess &&
-                    fellowshipServices.data.map( (fellowshipService: TFellowshipService) => (
-                        <List.Item key={fellowshipService.id}  
-                        
-                        arrow={false} prefix={<Image
-                            src={fellowshipService.image_url}
-                            style={{ borderRadius: 20 }}
-                            fit='cover'
-                            width={40}
-                            height={40}
-                          />} 
-                          description={`Offering: ${fellowshipService.offering} GHc`} extra={`Attendance: ${ fellowshipService.attendance }`} onClick={() => {}} >
-                            { getUserFriendlyDateFormat(fellowshipService.service_date) }
-                        </List.Item>
+                    fellowshipServices.data.map( (fellowshipService: TFellowshipService) => 
+                        { return fellowshipService.cancel_service_reason == null 
+                            ?
+                            (
+                                <List.Item key={fellowshipService.id}  
+                                    arrow={false} prefix={<Image
+                                    src={fellowshipService.image_url}
+                                    style={{ borderRadius: 20 }}
+                                    fit='cover'
+                                    width={40}
+                                    height={40}
+                                  />} 
+                                  description={`Offering: ${fellowshipService.offering} GHc`} extra={`Attendance: ${ fellowshipService.attendance }`} >
+                                    { getUserFriendlyDateFormat(fellowshipService.service_date) }
+                                </List.Item>
+                            ) 
+                            :
+                            (
+                                <List.Item key={fellowshipService.id}
+                                    arrow={false} prefix={<StopOutline fontSize={32} color='red'/>}
+                                    description={fellowshipService.cancel_service_reason} extra={`Attendance: 0`}
+                                >  
+                                    { getUserFriendlyDateFormat(fellowshipService.service_date) }
+                                </List.Item>
+                            )   
+                        } 
                     )
-                )
                 }
                 
             </List>

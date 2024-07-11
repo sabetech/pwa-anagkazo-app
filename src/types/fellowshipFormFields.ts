@@ -13,4 +13,10 @@ export type TFellowshipService = {
     service_date: string;
     foreign_offering: number;
     image_url: string;
+    cancel_service_reason: string;
+}
+
+export type TCancelFellowshipService = {
+    service_date: string;
+    reason: string;
 }

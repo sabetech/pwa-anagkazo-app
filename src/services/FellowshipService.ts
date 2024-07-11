@@ -13,3 +13,10 @@ export const postFellowshipService = async (studentID: number, fellowshipService
 export const getFellowshipServices = async (studentId: number): Promise<AxiosResponse> => {
     return (await api.get(`/fellowship_service/${studentId}`, {})).data;
 }
+
+export const cancelFellowshipService = async(studentId: number, reason: string, service_date: string): Promise<AxiosResponse> => {
+    return (await api.post(`/fellowship_service/${studentId}/cancel`,{
+        service_date, 
+        reason: reason
+    }, {})).data
+}

@@ -25,7 +25,7 @@ const FellowshipServiceForm = () => {
         },
         onSuccess: (data) => {
             Toast.show({
-                content: 'Login Successful',
+                content: 'Service form Filled Successfully',
                 duration: 1000,
                 icon: 'success',
                 position: 'top'
