@@ -1,16 +1,51 @@
-import { useState, RefObject } from 'react';
-import { NavBar, Form, Button, DatePicker, Stepper, ImageUploader, Input } from 'antd-mobile'
+import { useState, RefObject, useContext } from 'react';
+import { NavBar, Form, Button, DatePicker, Stepper, ImageUploader, Input, Dialog } from 'antd-mobile'
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import type { DatePickerRef } from 'antd-mobile/es/components/date-picker'
 import { ImageUploadItem } from 'antd-mobile/es/components/image-uploader'
+import { FellowshipServiceFormFields } from '../../types/fellowshipFormFields'
+import { useMutation } from 'react-query';
+import { ResponseError } from '../../interfaces/ServerResponse'
+import { postFellowshipService } from '../../services/FellowshipService'
+import { UserContext } from '../../contexts/UserContext';
+import { IUserManager } from '../../interfaces/ServerResponse';
 
 const now = new Date()
 const FellowshipServiceForm = () => {
     const navigate = useNavigate();
     const [fileList, setFileList] = useState<ImageUploadItem[]>([]);
     const [fellowshipImage, setFellowshipImage] = useState<File>();
-    const [bussingForm] = Form.useForm()
+    const [fellowshipservice] = Form.useForm()
+    const { user, storeUser } = useContext(UserContext) as IUserManager;
+
+    const {  mutate: saveFellowshipForm, isLoading } = useMutation({
+        mutationFn: async (fellowshipServiceFields: FellowshipServiceFormFields) => {
+            return await postFellowshipService(user?.id as number, fellowshipServiceFields)
+        },
+        onSuccess: (data) => {
+            console.log("data::", data)
+        },
+        onError: (error: ResponseError) => {
+            console.log(error)
+        }
+    });
+
+    const onFormSubmit = (fellowshipServiceFields: any) => {
+        // console.log("FELLOWSHIP SERVICE FEIELDS::", fellowshipServiceFields)
+        if ((fellowshipServiceFields.fellowship_service_image == null) || (typeof fellowshipServiceFields.fellowship_service_image === 'undefined')) {
+            Dialog.alert({
+                content: 'Image is not uploaded. Kindly upload an image from your device!',
+                closeOnMaskClick: true,
+                confirmText: 'OK'
+            });
+            return
+        } 
+
+        fellowshipServiceFields = {...fellowshipServiceFields, service_date: dayjs(fellowshipServiceFields.service_date).format("YYYY-MM-DD"), fellowship_service_image: fellowshipImage}
+
+        saveFellowshipForm(fellowshipServiceFields as FellowshipServiceFormFields)
+    }
 
     const loadImage = async (file: File) => {
         
@@ -26,13 +61,20 @@ const FellowshipServiceForm = () => {
            <NavBar onBack={() => navigate("/fellowship")} style={{'--height': '60px', backgroundColor: '#b12340', color:'white'}} > Fellowship Service Form </NavBar>
 
            <Form
-                form={bussingForm}
+                form={fellowshipservice}
                 layout='horizontal'
                 footer={
                     <Button block type='submit' color='primary' size='large'>
-                    Submit
+                        Submit
                     </Button>
                 }
+                onFinish={onFormSubmit}
+                initialValues={{
+                    service_date: new Date(),
+                    attendance: 0,
+                    offering: 0,
+                    foreign_offering: 0
+                }}
             >               
                 <Form.Item
                     name='service_date'
@@ -64,23 +106,23 @@ const FellowshipServiceForm = () => {
                     label='Offering (GHC)'
                     rules={[{ required: true, message: 'Enter your Offering here!' }]}
                 >
-                    <Input onChange={console.log} placeholder='60.00' />
+                    <Input  placeholder={'60.00'}  />
                 </Form.Item>
                 <Form.Item
-                    name='foreign offering'
+                    name='foreign_offering'
                     label='Offering (Foreign Currency)'
                     rules={[{ required: false}]}
                 >
-                    <Input onChange={console.log} placeholder='60.00' />
+                    <Input placeholder='60.00' />
                 </Form.Item>
                 <Form.Item name='fellowship_service_image' label='Upload Service Picture'>
-                            <ImageUploader
-                                value={fileList}
-                                onChange={setFileList}
-                                maxCount={1}
-                                upload={loadImage}
-                                />
-                        </Form.Item>
+                    <ImageUploader
+                        value={fileList}
+                        onChange={setFileList}
+                        maxCount={1}
+                        upload={loadImage}
+                        />
+                </Form.Item>
                 
             </Form>
         </>

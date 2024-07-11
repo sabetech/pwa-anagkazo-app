@@ -15,6 +15,7 @@ const FellowshipServiceDetails = () => {
         console.log(
             fellowshipCancelForm.getFieldValue("reason")
         )
+        fellowshipCancelForm.resetFields();
     }
 
     const handleCancelServiceClick = () => {
@@ -27,12 +28,13 @@ const FellowshipServiceDetails = () => {
                 primary: true
             }, {
                 key: 'ignore',
-                text: 'Ignore',
-                primary: false
+                text: 'Ignore'
             }],
-            onAction: () => {
-                console.log("CANCELLING...")
+            onAction: (action, index) => {
+                
+                if (action.key !== 'ok') return;
                 onFellowshipServiceCancel()
+
             },
             content: <>
                 <Form layout='vertical' 
