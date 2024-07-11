@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { NavBar, List, Space, Button, Modal, Form, TextArea,SpinLoading } from 'antd-mobile'
+import { NavBar, List, Space, Button, Modal, Form, TextArea,SpinLoading, Image } from 'antd-mobile'
 import { CheckOutline } from 'antd-mobile-icons';
 import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
@@ -85,7 +85,16 @@ const FellowshipServiceDetails = () => {
                 {
                     isSuccess &&
                     fellowshipServices.data.map( (fellowshipService: TFellowshipService) => (
-                        <List.Item key={fellowshipService.id}  arrow={false} prefix={<CheckOutline style={{ color: 'green' }}/>} description={`Offering: ${fellowshipService.offering}`} extra={`Attendance: ${ fellowshipService.attendance }`} onClick={() => {}} >
+                        <List.Item key={fellowshipService.id}  
+                        
+                        arrow={false} prefix={<Image
+                            src={fellowshipService.image_url}
+                            style={{ borderRadius: 20 }}
+                            fit='cover'
+                            width={40}
+                            height={40}
+                          />} 
+                          description={`Offering: ${fellowshipService.offering} GHc`} extra={`Attendance: ${ fellowshipService.attendance }`} onClick={() => {}} >
                             { getUserFriendlyDateFormat(fellowshipService.service_date) }
                         </List.Item>
                     )
