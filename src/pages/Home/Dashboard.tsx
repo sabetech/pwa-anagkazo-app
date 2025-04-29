@@ -16,6 +16,7 @@ import type {
 } from 'antd-mobile/es/components/action-sheet';
 import * as StorageKeys from "../../constants/StorageKeys"
 import { IAttendanceRequestInfo } from '../../interfaces/Attendance';
+import ProfileImage from '../../components/dashboard/ProfileImage';
 
 const Dashboard = () => {
     
@@ -151,7 +152,7 @@ const Dashboard = () => {
                 <Space style={{ '--gap': '10px' }}>
                     {/* https://via.placeholder.com/250 */}
                     <div style={{width: "35vw", height: "90%", marginTop: 20, marginLeft: 20}}>
-                        <Image src='https://via.placeholder.com/200' fit='cover' style={{ width: "95%", borderRadius: 20 }} />
+                        <ProfileImage index_number={user?.index_number as number} />
                     </div>
                     
                     <Space direction='vertical'>
@@ -179,10 +180,10 @@ const Dashboard = () => {
                  <Grid.Item>
                     <ValueCard key={"fellowship"} title="Fellowship" value={12} handleClick={() => handleClick("fellowship")} Icon={<TeamOutline />}/>
                 </Grid.Item>
-                {/*<Grid.Item >
-                    <ValueCard key={"fellowshipOfferingAvg"} title="Bussing" value={ averageBussing } handleClick={() => handleClick("bacenta")} />
+                <Grid.Item >
+                    <ValueCard key={"fellowshipOfferingAvg"} title="Bussing" value={ averageBussing } handleClick={() => handleClick("bacenta")} Icon={<TeamOutline />} />
                 </Grid.Item>
-                <Grid.Item>
+                {/*<Grid.Item>
                     <ValueCard key={"pastoral_point"} title="Pastoral Points" value={totalPoints} handleClick={() => handleClick("pastoral_point")} />
                 </Grid.Item> */}
             </Grid>

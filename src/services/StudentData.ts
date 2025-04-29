@@ -13,3 +13,7 @@ export const postNumberBussed = async (bussingInfo: IBussingInfo): Promise<Axios
 export const getBussing = async (indexnumber: number = 701274): Promise<AxiosResponse> => {
     return (await api.get(`/bussing/${indexnumber}`, {}));
 }
+
+export const getProfileImage = async (indexnumber: number = 701274): Promise<AxiosResponse> => {
+    return (await api.get(`/student/${indexnumber}/image`, {}));
+}
